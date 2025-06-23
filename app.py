@@ -72,6 +72,7 @@ def login():
     return render_template("login.html")
 
 @app.route("/logout", methods=["POST"])
+@h.login_required
 def logout():
     print("loggingout")
     print(session)
@@ -82,20 +83,46 @@ def logout():
 @app.route("/settings", methods=["POST", "GET"])
 @h.login_required
 def settings():
+    # Update user's setup status
+    if not session.get("is_setup"):
+        cur.execute(f"UPDATE users SET setup=TRUE WHERE id={session["user_id"]};")
+        conn.commit()
+        session["is_setup"] = True
+
+    # Edit based on changes
     if request.method == "POST":
+        # Add new categories
         new_categories = request.form.getlist("new_cat")
         for cat in new_categories:
-            cur.execute(f"INSERT INTO categories (user_id, name) VALUES ({session["user_id"]}, '{cat}');")
-            conn.commit()
+            if cat != "":
+                cur.execute(f"INSERT INTO categories (user_id, name) VALUES ({session["user_id"]}, '{cat}');")
+                conn.commit()
+
+        # Delete categories
         old_categories = request.form.getlist("category")
         for cat in old_categories:
             if int(cat[-1]) == 1:
                 delete_id = int(cat[:-1])
                 cur.execute(f"DELETE FROM categories WHERE id={delete_id};")
                 conn.commit()
+
+        # Update user's categories
         h.update_categories(cur)
+
+        # Update user's budget
+        budget = request.form.get("budget")
+        cur.execute(f"UPDATE users SET curr_budget={budget} WHERE id={session["user_id"]};")
+        conn.commit()
+
+        # Go back to settings page
         return redirect("/settings")
-    return render_template("settings.html", categories=session["categories"])
+    
+    # Get user's current budget
+    cur.execute(f"SELECT curr_budget FROM users WHERE id={session["user_id"]};")
+    budget = cur.fetchall()[0][0]
+
+    # Go to settings page
+    return render_template("settings.html", categories=session["categories"], budget=budget)
 
 if __name__ == '__main__':
     app.run(debug=True)
