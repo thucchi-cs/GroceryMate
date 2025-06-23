@@ -1,7 +1,5 @@
 import { add, submitForm, submitOnEnter } from "./script.js";
 
-console.log(add(2,4))
-
 let form = document.querySelector("form")
 let inputs = document.querySelectorAll("input")
 let btn = document.querySelector("button")

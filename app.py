@@ -38,7 +38,7 @@ conn = connection_pool.getconn()
 cur = conn.cursor()
 
 app.jinja_env.filters["usd"] = h.format_usd
-print("hi")
+
 @app.route("/")
 def index():
     if session.get("user_id"):
@@ -59,8 +59,18 @@ def register():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        return redirect("/")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if h.login(cur, username, password):
+            h.set_session_id(cur, username)
+            return redirect("/")
+        return redirect("/login")
     return render_template("login.html")
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True)

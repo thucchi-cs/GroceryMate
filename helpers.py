@@ -23,3 +23,12 @@ def set_session_id(cur, username):
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")
     user = cur.fetchall()[0]
     session["user_id"] = user[0]
+
+# Check valid log in
+def login(cur, username, pwd):
+    cur.execute(f"SELECT * FROM users WHERE username='{username}';")
+    user = cur.fetchall()
+    if len(user) == 0:
+        return False
+    hashed_pwd = user[0][2]
+    return check_password_hash(hashed_pwd, pwd)

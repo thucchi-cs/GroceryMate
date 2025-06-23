@@ -4,5 +4,12 @@
 
     Login
     <a href="/register">Regster</a>
+    <form action="/login" method="POST">
+        <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username">
+        <input autocomplete="off" type="password" name="password" placeholder="Password" id="password">
+        <button type="button">Log in</button>
+    </form>
+
+    <script type="module" src="/static/login.js"></script>
 
 {% endblock %}
