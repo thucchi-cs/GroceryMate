@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    SETINGS
+    <form action="/settings" method="post">
+        <label>Budget</label>
+        $<input autofocus autocomplete="off" type="number" step="0.01" min="0.00" max="500.00" name="budget" id="budget" placeholder="100.00">
+
+        <div id="categories">
+            {% for cat in categories %}
+            <li>
+                {{cat["category"]}}
+                {% if cat["user_id"] != 1 %}
+                    <input hidden name="category" value="{{cat["id"]}} 0">
+                    <button id="delete_cat" type="button">-</button>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </div>
+        <button id="add_cat" type="button">add</button>
+        <button type="submit">Save</button>
+    </form>
+    
+    <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+
+    <script type="module" src="/static/settings.js"></script>
+
+{% endblock %}

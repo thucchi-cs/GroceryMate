@@ -40,10 +40,12 @@ cur = conn.cursor()
 app.jinja_env.filters["usd"] = h.format_usd
 
 @app.route("/")
+@h.login_required
 def index():
-    if session.get("user_id"):
+    if session.get("is_setup"):
         return render_template("index.html") 
-    return redirect("/login")
+    else:
+        return redirect("/settings")
 
 @app.route("/register", methods=["POST","GET"])
 def register():
@@ -71,8 +73,29 @@ def login():
 
 @app.route("/logout", methods=["POST"])
 def logout():
+    print("loggingout")
+    print(session)
     session.clear()
+    print(session)
     return redirect("/")
+
+@app.route("/settings", methods=["POST", "GET"])
+@h.login_required
+def settings():
+    if request.method == "POST":
+        new_categories = request.form.getlist("new_cat")
+        for cat in new_categories:
+            cur.execute(f"INSERT INTO categories (user_id, name) VALUES ({session["user_id"]}, '{cat}');")
+            conn.commit()
+        old_categories = request.form.getlist("category")
+        for cat in old_categories:
+            if int(cat[-1]) == 1:
+                delete_id = int(cat[:-1])
+                cur.execute(f"DELETE FROM categories WHERE id={delete_id};")
+                conn.commit()
+        h.update_categories(cur)
+        return redirect("/settings")
+    return render_template("settings.html", categories=session["categories"])
 
 if __name__ == '__main__':
     app.run(debug=True)
