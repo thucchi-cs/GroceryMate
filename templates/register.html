@@ -1,0 +1,16 @@
+{% extends "layout.html" %} 
+
+{% block body %}
+
+    Register
+    <a href="/login">Login</a>
+    {{h}}
+    <form action="/register" method="post">
+        <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username">
+        <input autofocus autocomplete="off" type="password" name="password" placeholder="Password" id="password">
+        <button type="button">Register</button>
+    </form>
+
+    <script type="module" src="/static/register.js"></script>
+
+{% endblock %}
