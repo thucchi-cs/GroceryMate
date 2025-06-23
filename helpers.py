@@ -24,6 +24,21 @@ def set_session_id(cur, username):
     user = cur.fetchall()[0]
     session["user_id"] = user[0]
 
+# Check valid registration
+def register(cur, username):
+    # Get list of existing usernames
+    cur.execute("SELECT * FROM users;")
+    users = cur.fetchall()
+    usernames = [u[1] for u in users]
+    
+    # Check if username is valid
+    if username in usernames:
+        print("Username already exists!")
+        return False
+    
+    # All fields pass
+    return True
+
 # Check valid log in
 def login(cur, username, pwd):
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")

@@ -49,11 +49,13 @@ def index():
 def register():
     if request.method == "POST":
         username = request.form.get("username")
-        password = generate_password_hash(request.form.get("password"))
-        cur.execute(f"INSERT INTO users (username, password) VALUES ('{username}', '{password}');")
-        conn.commit()
-        h.set_session_id(cur, username)
-        return redirect("/")
+        if h.register(cur, username):
+            password = generate_password_hash(request.form.get("password"))
+            cur.execute(f"INSERT INTO users (username, password) VALUES ('{username}', '{password}');")
+            conn.commit()
+            h.set_session_id(cur, username)
+            return redirect("/")
+        return redirect("/register")
     return render_template("register.html", h="l")
 
 @app.route("/login", methods=["POST", "GET"])
