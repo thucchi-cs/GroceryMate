@@ -41,10 +41,10 @@ cur = conn.cursor()
 app.jinja_env.filters["usd"] = h.format_usd
 
 @app.route("/")
-@h.login_required
+# @h.login_required
 def index():
-    if session.get("is_setup"):
-        return render_template("index.html") 
+    if session.get("is_setup") or not session.get("user_id"):
+        return render_template("index.html", session=session) 
     else:
         return redirect("/settings")
 
