@@ -4,3 +4,4 @@ flask_session
 werkzeug
 psycopg2-binary
 dotenv
+waitress
