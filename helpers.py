@@ -20,13 +20,18 @@ def login_required(f):
 
 # Log in user
 def set_session_id(cur, username):
+    flash("setting session;")
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")
     user = cur.fetchall()[0]
+    flash("fetched;")
     session["user_id"] = user[0]
     session["is_setup"] = user[4]
+    flash("set up + id;")
     cur.execute(f"SELECT * FROM categories WHERE user_id=1 OR user_id={session["user_id"]};")
     categories = cur.fetchall()
+    flash("fetched2;")
     session["categories"] = [{"category":c[2], "id": c[0], "user_id": c[1]} for c in categories]
+    flash("categories;")
 
 # Update list of categories
 def update_categories(cur):
@@ -51,14 +56,18 @@ def register(cur, username):
 
 # Check valid log in
 def login(cur, username, pwd):
+    flash("logging in;")
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")
     user = cur.fetchall()
+    flash("read;")
     if len(user) == 0:
-        flash("No username found")
+        flash("No username found;")
         return False
+    flash("checking pwd;")
     hashed_pwd = user[0][2]
     pwd_correct = check_password_hash(hashed_pwd, pwd)
     if not pwd_correct:
-        flash("incorrect pwd")
+        flash("incorrect pwd;")
         return False
+    flash("all good;")
     return True

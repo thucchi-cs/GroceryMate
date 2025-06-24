@@ -64,10 +64,14 @@ def register():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
+        flash("submitted;")
         username = request.form.get("username")
         password = request.form.get("password")
+        flash("check logging in;")
         if h.login(cur, username, password):
+            flash("logged in;")
             h.set_session_id(cur, username)
+            flash("session good;")
             return redirect("/")
         return redirect("/login")
     return render_template("login.html")
