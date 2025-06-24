@@ -7,6 +7,7 @@ let btn = form.querySelector("button")
 submitOnEnter(inputs, btn);
 
 btn.addEventListener("click", () => {
+    console.log("clicked")
     let username = document.getElementById("username");
     let password = document.getElementById("password");
 
@@ -15,5 +16,6 @@ btn.addEventListener("click", () => {
         return;
     }
 
+    console.log("submitting")
     submitForm(form);
 })

@@ -43,6 +43,7 @@ app.jinja_env.filters["usd"] = h.format_usd
 @app.route("/")
 # @h.login_required
 def index():
+    flash("index/")
     if session.get("is_setup") or not session.get("user_id"):
         return render_template("index.html", session=session) 
     else:
@@ -50,6 +51,7 @@ def index():
 
 @app.route("/register", methods=["POST","GET"])
 def register():
+    flash("register/")
     if request.method == "POST":
         username = request.form.get("username")
         if h.register(cur, username):
@@ -63,6 +65,7 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    flash("login/")
     if request.method == "POST":
         flash("submitted;")
         username = request.form.get("username")
@@ -79,6 +82,7 @@ def login():
 @app.route("/logout", methods=["POST"])
 @h.login_required
 def logout():
+    flash("logout/")
     print("loggingout")
     print(session)
     session.clear()
@@ -88,6 +92,7 @@ def logout():
 @app.route("/settings", methods=["POST", "GET"])
 @h.login_required
 def settings():
+    flash("settings/")
     # Update user's setup status
     if not session.get("is_setup"):
         cur.execute(f"UPDATE users SET setup=TRUE WHERE id={session["user_id"]};")
@@ -132,6 +137,7 @@ def settings():
 # This week's grocery list
 @app.route("/list")
 def list():
+    flash('list/')
     sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
     cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}';")
     grocery_list = cur.fetchall()

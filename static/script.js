@@ -3,7 +3,13 @@ export function add(a,b) {
 }
 
 export function submitForm(form) {
-    form.submit()
+    console.log("AHHHHHHHHHH")
+    console.log(form)
+    setTimeout(()=>{
+        console.log("waited")
+        form.submit()
+        console.log("submitted")
+    }, 1000);
 }
 
 export function submitOnEnter(inputs, btn) {
