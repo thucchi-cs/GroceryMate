@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    HISTROYT
+
+    {% for list in lists %}
+        <div>
+            ID: {{list["id"]}}
+            Start: {{list["start"]}}
+            End: {{list["end"]}}
+            Budget: {{list["budget"]}}
+            Spent: {{list["spent"]}}
+            Items: {{list["items"]}}
+            Total: {{list["total"]}}
+            <a href="/list?id={{list["id"]}}">Go to list</a>
+        </div>
+    {% endfor %}
+
+    <form action="/" method="GET">
+        <button type="submit">Home</button>
+    </form>
+
+
+    <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+
+{% endblock %}

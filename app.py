@@ -131,19 +131,27 @@ def settings():
 
 # This week's grocery list
 @app.route("/list")
+@h.login_required
 def list():
-    sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
-    cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
-    grocery_list = cur.fetchall()
-    if len(grocery_list) == 0:
-        saturday = sunday + timedelta(days=6)
-        # Get user's current budget
-        cur.execute(f"SELECT curr_budget FROM users WHERE id={session["user_id"]};")
-        budget = cur.fetchall()[0][0]
-        cur.execute(f"INSERT INTO grocery_lists (user_id, week_start, week_end, budget) VALUES ({session["user_id"]}, '{sunday}', '{saturday}', {budget});")
-        conn.commit()
+    if not request.args.get("id"):
+        sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
         cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
         grocery_list = cur.fetchall()
+        if len(grocery_list) == 0:
+            saturday = sunday + timedelta(days=6)
+            # Get user's current budget
+            cur.execute(f"SELECT curr_budget FROM users WHERE id={session["user_id"]};")
+            budget = cur.fetchall()[0][0]
+            cur.execute(f"INSERT INTO grocery_lists (user_id, week_start, week_end, budget) VALUES ({session["user_id"]}, '{sunday}', '{saturday}', {budget});")
+            conn.commit()
+            cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
+            grocery_list = cur.fetchall()
+    else:
+        cur.execute(f"SELECT * FROM grocery_lists WHERE id={request.args.get("id")};")
+        grocery_list = cur.fetchall()
+        if (len(grocery_list) == 0) or (grocery_list[0][1] != session["user_id"]):
+            flash("List not found!")
+            return redirect("/history")
 
     grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": grocery_list[0][4], "spent": grocery_list[0][5], "items": grocery_list[0][6], "total": grocery_list[0][7]}    
     
@@ -154,6 +162,7 @@ def list():
     return render_template("list.html", grocery_list=grocery_list, categories=session["categories"], items=items)
 
 @app.route("/update_list", methods=["POST"])
+@h.login_required
 def update():
     print(request.args)
     print(request.args.getlist("bought"))
@@ -184,6 +193,14 @@ def update():
     conn.commit()
 
     return "sup"
+
+@app.route("/history")
+@h.login_required
+def history():
+    cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} ORDER BY week_start DESC;")
+    data = cur.fetchall()
+    lists = [{"id":d[0], "start":d[2], "end":d[3], "budget":d[4], "spent":d[5], "items":d[6], "total":d[7]} for d in data]
+    return render_template("history.html", lists=lists)
 
 if __name__ == '__main__':
     app.run()
