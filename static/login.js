@@ -1,8 +1,8 @@
-import { add, submitForm, submitOnEnter } from "./script.js";
+import { flashMsg, submitForm, submitOnEnter } from "./script.js";
 
 let form = document.querySelector("form")
 let inputs = document.querySelectorAll("input")
-let btn = document.querySelector("button")
+let btn = form.querySelector("button")
 
 submitOnEnter(inputs, btn);
 
@@ -11,7 +11,7 @@ btn.addEventListener("click", () => {
     let password = document.getElementById("password");
 
     if (password.value === "" || username.value === "") {
-        console.log("no");
+        flashMsg("All fields must be filled");
         return;
     }
 

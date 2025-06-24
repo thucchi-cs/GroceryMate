@@ -54,6 +54,11 @@ def login(cur, username, pwd):
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")
     user = cur.fetchall()
     if len(user) == 0:
+        flash("No username found")
         return False
     hashed_pwd = user[0][2]
-    return check_password_hash(hashed_pwd, pwd)
+    pwd_correct = check_password_hash(hashed_pwd, pwd)
+    if not pwd_correct:
+        flash("incorrect pwd")
+        return False
+    return True
