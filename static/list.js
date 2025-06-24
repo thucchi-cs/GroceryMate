@@ -15,14 +15,28 @@ form.addEventListener("submit", () => {
 let addForm = document.querySelector("#add_item");
 let addBtn = document.querySelector("#add_btn")
 let list = document.querySelector("#list_items")
+let newItems = 0;
 addBtn.addEventListener("click", () => {
+    newItems++;
     let item = addForm.querySelector("#item");
     let category = addForm.querySelector("#category").options[addForm.querySelector("#category").selectedIndex].text;
     let qty = addForm.querySelector("#qty");
     let price = addForm.querySelector("#price");
 
+    let id = -newItems;
+
     let listItem = document.createElement("li");
-    listItem.innerHTML = item.value + " " + category + " " + qty.value + " " + price.value;
+    let text = document.createElement("span");
+    text.innerHTML = item.value + " " + category + " " + qty.value + " " + price.value;
+    let idValue = document.createElement("input");
+    idValue.type = "number";
+    idValue.name = "new_id";
+    idValue.hidden = true;
+    idValue.value = id;
+    let boughtValue = document.createElement("input");
+    boughtValue.type = "checkbox";
+    boughtValue.name = "bought";
+    boughtValue.value = id;
     let itemValue = document.createElement("input");
     itemValue.type = "text";
     itemValue.name = "new_item";
@@ -48,6 +62,9 @@ addBtn.addEventListener("click", () => {
     deleteBtn.type = "button";
     deleteBtn.innerHTML = "-";
 
+    listItem.appendChild(idValue);
+    listItem.appendChild(boughtValue);
+    listItem.appendChild(text);
     listItem.appendChild(itemValue);
     listItem.appendChild(categoryValue);
     listItem.appendChild(qtyValue);

@@ -6,17 +6,20 @@
     <form id="all_items" action="/update_list" method="post">
         <input name="list_id" type="number" hidden value={{grocery_list["id"]}}>
     
-        <p>{{grocery_list["id"]}}</p>
-        <p>{{grocery_list["start"]}}</p>
-        <p>{{grocery_list["end"]}}</p>
-        <p>{{grocery_list["budget"]}}</p>
-        <p>{{grocery_list["spent"]}}</p>
-        <p>{{grocery_list["items"]}}</p>
+        <p>ID: {{grocery_list["id"]}}</p>
+        <p>Start: {{grocery_list["start"]}}</p>
+        <p>End: {{grocery_list["end"]}}</p>
+        <p>Budget: {{grocery_list["budget"]}}</p>
+        <p>Spent: {{grocery_list["spent"]}}</p>
+        <p>Items: {{grocery_list["items"]}}</p>
+        <p>Total: {{grocery_list["total"]}}</p>
     
         <div id="list_items">
             {% for item in items %}
                 <li>
-                    {{item["item"]}} {{item["cat_id"]}} {{item["qty"]}} {{item["price"]}}
+                    <input type="number" name="new_id" hidden value={{item["id"]}}>
+                    <input type="checkbox" name="bought" value={{item["id"]}} {% if item["bought"] %}checked{% endif %}>
+                    <span>{{item["item"]}} {{item["cat_id"]}} {{item["qty"]}} {{item["price"]}}</span>
                     <input type="text" name="new_item" hidden value={{item["item"]}}>
                     <input type="number" name="new_category_id" hidden value={{item["cat_id"]}}>
                     <input type="number" name="new_quantity" hidden value={{item["qty"]}}>

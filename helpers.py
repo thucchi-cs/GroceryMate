@@ -47,7 +47,7 @@ def register(cur, username):
     
     # Check if username is valid
     if username in usernames:
-        print("Username already exists!")
+        flash("Username already exists!")
         return False
     
     # All fields pass
