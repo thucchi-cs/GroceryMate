@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from psycopg2 import pool
 import os
 from werkzeug.security import generate_password_hash
+from datetime import date, timedelta
 
 # Set up web app
 app = Flask(__name__)
@@ -124,5 +125,24 @@ def settings():
     # Go to settings page
     return render_template("settings.html", categories=session["categories"], budget=budget)
 
+# This week's grocery list
+@app.route("/list")
+def list():
+    sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
+    cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}';")
+    grocery_list = cur.fetchall()
+    if len(grocery_list) == 0:
+        saturday = sunday + timedelta(days=6)
+        # Get user's current budget
+        cur.execute(f"SELECT curr_budget FROM users WHERE id={session["user_id"]};")
+        budget = cur.fetchall()[0][0]
+        cur.execute(f"INSERT INTO grocery_lists (user_id, week_start, week_end, budget) VALUES ({session["user_id"]}, '{sunday}', '{saturday}', {budget});")
+        conn.commit()
+        cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}';")
+        grocery_list = cur.fetchall()
+
+    grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": grocery_list[0][4], "spent": grocery_list[0][5], "items": grocery_list[0][6]}
+    return render_template("list.html", grocery_list=grocery_list)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
