@@ -1,15 +1,5 @@
-export function add(a,b) {
-    return a+b;
-}
-
 export function submitForm(form) {
-    console.log("AHHHHHHHHHH")
-    console.log(form)
-    setTimeout(()=>{
-        console.log("waited")
-        form.submit()
-        console.log("submitted")
-    }, 1000);
+    form.submit();
 }
 
 export function submitOnEnter(inputs, btn) {

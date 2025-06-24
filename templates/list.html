@@ -11,6 +11,25 @@
     <p>{{grocery_list["spent"]}}</p>
     <p>{{grocery_list["items"]}}</p>
     
+    <form id="all_items" action="/update_list" method="post">
+        <div id="list_items">
+            <div id="add_item">
+                <li>
+                    <input autocomplete="off" id="item" type="text" placeholder="Add an item" name="item">
+                    <select name="category" id="category">
+                        <option selected disabled>Category</option>
+                        {% for cat in categories %}
+                        <option value={{cat["id"]}}>{{cat["category"]|cap}}</option>
+                        {% endfor %}
+                    </select>
+                    <input autocomplete="off" id="qty" type="number" step="1" min="1" placeholder="Quantity" name="qty">
+                    <input autocomplete="off" id="price" type="number" step="0.01" min="0.01" placeholder="$ Price" name="price">
+                    <button type="button" class="confirm" id="add_btn">Confirm</button>
+                </li>
+            </div>
+        </div>
+    </form>
+    
     <form action="/" method="GET">
         <button type="submit">Home</button>
     </form>

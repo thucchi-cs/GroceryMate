@@ -1,12 +1,16 @@
-import { add, submitForm, submitOnEnter } from "./script.js";
-
-console.log(add(2,4))
+import { flashMsg, submitForm, submitOnEnter } from "./script.js";
 
 let form = document.querySelector("form")
 let inputs = document.querySelectorAll("input")
-let btn = document.querySelector("button")
+let btn = form.querySelector("button")
 
 submitOnEnter(inputs, btn);
+
+function clearForm(inputFields) {
+    inputFields.forEach(input => {
+        input.value = "";
+    })
+}
 
 btn.addEventListener("click", () => {
     let username = document.getElementById("username");
@@ -14,14 +18,16 @@ btn.addEventListener("click", () => {
     let password2 = document.getElementById("password2");
 
     if (password.value === "" || username.value === "" || password2.value==="") {
-        console.log("no");
+        flashMsg("All fields must be filled.")
+        clearForm([username, password, password2]);
         return;
     }
 
     const allowed = "abcdefghijklmnopqrstuvwxyz0123456789_."
     for (const letter of username.value) {
         if (!allowed.includes(letter)) {
-            console.log("username includes error");
+            flashMsg("Username can only contain lowercase letters a-z, digits 0-9, periods or underscores!");
+            clearForm([username, password, password2]);
             return;
         }
     }
@@ -46,17 +52,20 @@ btn.addEventListener("click", () => {
     }
 
     if (!(hasSymbol && hasDigit && hasUpper)) {
-        console.log("pwd not meet criteria");
+        flashMsg("Password does not meet security criteria!");
+        clearForm([username, password, password2]);
         return;
     }
 
     if (password.value.length < 8) {
-        console.log("pwd too short");
+        flashMsg("Password is too short!");
+        clearForm([username, password, password2]);
         return;
     }
 
     if (password.value != password2.value) {
-        console.log("pwd no confirm")
+        flashMsg("Password was not confirmed!");
+        clearForm([username, password, password2]);
         return
     }
 

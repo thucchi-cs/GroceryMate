@@ -12,7 +12,9 @@ btn.addEventListener("click", () => {
     let password = document.getElementById("password");
 
     if (password.value === "" || username.value === "") {
-        flashMsg("All fields must be filled");
+        flashMsg("All fields must be filled!");
+        username.value = "";
+        password.value = ""
         return;
     }
 
