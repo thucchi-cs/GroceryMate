@@ -1,16 +1,16 @@
+let changed = false;
+
 window.addEventListener('beforeunload', (event) => {
     console.log('User is about to leave the page!');
-    let form = document.querySelector("#all_items");
-    let formData = new FormData(document.querySelector("#all_items"));
-    let data = new URLSearchParams(formData).toString();
-    fetch("/update_list?"+data, {
-        method: "POST"
-    })
+    console.log(event)
+    if (changed) {
+        event.preventDefault()
+        let formData = new FormData(document.querySelector("#all_items"));
+        let data = new URLSearchParams(formData);
+        navigator.sendBeacon("/update_list", data);
+        changed = false
+    }
 });
-let form = document.querySelector("#all_items");
-form.addEventListener("submit", () => {
-    console.log("SUBMITTED")
-})
 
 let listId = document.getElementById("list_id")
 let listStart = document.getElementById("list_start")
@@ -107,6 +107,8 @@ addBtn.addEventListener("click", () => {
     price.value = ""
     qty.value = ""
     item.focus()
+
+    changed = true;
 })
 
 let deleteBtns = document.querySelectorAll("#delete_item");
@@ -119,6 +121,7 @@ deleteBtns.forEach(btn => {
         let price = parent.querySelector("#new_price");
         let totalTxt = listTotal.textContent;
         listTotal.textContent = totalTxt.substring(0, totalTxt.indexOf(" ")+1) + (Number(totalTxt.substring(totalTxt.indexOf(" ")+1)) - Number(price.value)).toFixed(2);
+        changed = true;
     })
 })
 
@@ -134,5 +137,6 @@ checkboxes.forEach(chk => {
         } else {
             listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf(" ")+1) + (Number(spentTxt.substring(spentTxt.indexOf(" ")+1)) - Number(price.value)).toFixed(2);
         }
+        changed = true
     })
 })

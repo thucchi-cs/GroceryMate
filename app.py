@@ -164,18 +164,18 @@ def list():
 @app.route("/update_list", methods=["POST"])
 @h.login_required
 def update():
-    print(request.args)
-    print(request.args.getlist("bought"))
-    list_id = request.args.get("list_id")
+    print(request.form)
+    print(request.form.getlist("bought"))
+    list_id = request.form.get("list_id")
     cur.execute(f"DELETE FROM grocery_items WHERE list_id={list_id};")
     conn.commit()
 
-    boughts = request.args.getlist("bought")
-    ids = request.args.getlist("new_id")
-    items = request.args.getlist("new_item")
-    category_ids = request.args.getlist("new_category_id")
-    quantities = request.args.getlist("new_quantity")
-    prices = request.args.getlist("new_price")
+    boughts = request.form.getlist("bought")
+    ids = request.form.getlist("new_id")
+    items = request.form.getlist("new_item")
+    category_ids = request.form.getlist("new_category_id")
+    quantities = request.form.getlist("new_quantity")
+    prices = request.form.getlist("new_price")
 
     new_items = [{"id":ids[i], "item": items[i], "category_id": category_ids[i], "qty": quantities[i], "price": prices[i]} for i in range(len(items))]
     spent = 0
