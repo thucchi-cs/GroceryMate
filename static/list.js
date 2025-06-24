@@ -43,15 +43,36 @@ addBtn.addEventListener("click", () => {
     priceValue.name = "new_price";
     priceValue.hidden = true;
     priceValue.value = price.value;
+    let deleteBtn = document.createElement("button");
+    deleteBtn.id = "delete_item";
+    deleteBtn.type = "button";
+    deleteBtn.innerHTML = "-";
 
     listItem.appendChild(itemValue);
     listItem.appendChild(categoryValue);
     listItem.appendChild(qtyValue);
     listItem.appendChild(priceValue);
-    list.appendChild(listItem);
+    listItem.appendChild(deleteBtn);
+    list.insertBefore(listItem, addForm);
+
+    deleteBtn.addEventListener("click", () => {
+        delete_items(deleteBtn)
+    })
 
     item.value = ""
     addForm.querySelector("#category").options[0].selected = true;
     price.value = ""
     qty.value = ""
+})
+
+function delete_items(btn) {
+    let parent = btn.parentElement;
+    list.removeChild(parent);
+}
+
+let deleteBtns = document.querySelectorAll("#delete_item");
+deleteBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+        delete_items(btn)
+    })
 })

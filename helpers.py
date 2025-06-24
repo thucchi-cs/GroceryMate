@@ -33,6 +33,7 @@ def set_session_id(cur, username):
 
 # Update list of categories
 def update_categories(cur):
+    print(session['user_id'])
     cur.execute(f"SELECT * FROM categories WHERE user_id=1 OR user_id={session["user_id"]};")
     categories = cur.fetchall()
     session["categories"] = [{"category":c[2], "id": c[0], "user_id": c[1]} for c in categories]

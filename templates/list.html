@@ -3,16 +3,28 @@
 {% block body %}
 
     This week's list
-    
-    <p>{{grocery_list["id"]}}</p>
-    <p>{{grocery_list["start"]}}</p>
-    <p>{{grocery_list["end"]}}</p>
-    <p>{{grocery_list["budget"]}}</p>
-    <p>{{grocery_list["spent"]}}</p>
-    <p>{{grocery_list["items"]}}</p>
-    
     <form id="all_items" action="/update_list" method="post">
+        <input name="list_id" type="number" hidden value={{grocery_list["id"]}}>
+    
+        <p>{{grocery_list["id"]}}</p>
+        <p>{{grocery_list["start"]}}</p>
+        <p>{{grocery_list["end"]}}</p>
+        <p>{{grocery_list["budget"]}}</p>
+        <p>{{grocery_list["spent"]}}</p>
+        <p>{{grocery_list["items"]}}</p>
+    
         <div id="list_items">
+            {% for item in items %}
+                <li>
+                    {{item["item"]}} {{item["cat_id"]}} {{item["qty"]}} {{item["price"]}}
+                    <input type="text" name="new_item" hidden value={{item["item"]}}>
+                    <input type="number" name="new_category_id" hidden value={{item["cat_id"]}}>
+                    <input type="number" name="new_quantity" hidden value={{item["qty"]}}>
+                    <input type="number" name="new_price" hidden value={{item["price"]}}>
+                    <button id="delete_item" type="button">-</button>
+                </li>
+            {% endfor %}
+
             <div id="add_item">
                 <li>
                     <input autocomplete="off" id="item" type="text" placeholder="Add an item" name="item">
@@ -27,6 +39,8 @@
                     <button type="button" class="confirm" id="add_btn">Confirm</button>
                 </li>
             </div>
+
+
         </div>
     </form>
     

@@ -128,7 +128,7 @@ def settings():
 @app.route("/list")
 def list():
     sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
-    cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}';")
+    cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
     grocery_list = cur.fetchall()
     if len(grocery_list) == 0:
         saturday = sunday + timedelta(days=6)
@@ -137,18 +137,35 @@ def list():
         budget = cur.fetchall()[0][0]
         cur.execute(f"INSERT INTO grocery_lists (user_id, week_start, week_end, budget) VALUES ({session["user_id"]}, '{sunday}', '{saturday}', {budget});")
         conn.commit()
-        cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}';")
+        cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
         grocery_list = cur.fetchall()
 
-    grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": grocery_list[0][4], "spent": grocery_list[0][5], "items": grocery_list[0][6]}
-    return render_template("list.html", grocery_list=grocery_list, categories=session["categories"])
+    grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": grocery_list[0][4], "spent": grocery_list[0][5], "items": grocery_list[0][6]}    
+    
+    cur.execute(f"SELECT * FROM grocery_items WHERE list_id={grocery_list["id"]};")
+    items = cur.fetchall()
+    items = [{"id":i[0], "list_id":i[1], "item":i[2], "cat_id":i[3], "price":i[4], "qty":i[5]} for i in items]
+
+    return render_template("list.html", grocery_list=grocery_list, categories=session["categories"], items=items)
 
 @app.route("/update_list", methods=["POST"])
 def update():
-    print("HEY")
     print(request.args)
     print(request.args.getlist("new_item"))
-    # print(request.get)
+    list_id = request.args.get("list_id")
+    cur.execute(f"DELETE FROM grocery_items WHERE list_id={list_id};")
+    conn.commit()
+
+    items = request.args.getlist("new_item")
+    category_ids = request.args.getlist("new_category_id")
+    quantities = request.args.getlist("new_quantity")
+    prices = request.args.getlist("new_price")
+
+    new_items = [{"item": items[i], "category_id": category_ids[i], "qty": quantities[i], "price": prices[i]} for i in range(len(items))]
+    for item in new_items:
+        cur.execute(f"INSERT INTO grocery_items (list_id, item, category_id, price, quantity) VALUES ({int(list_id)}, '{item["item"]}', {int(item["category_id"])}, {float(item["price"])}, {int(item["qty"])});")
+        conn.commit()        
+
     return "sup"
 
 if __name__ == '__main__':
