@@ -12,9 +12,17 @@ form.addEventListener("submit", () => {
     console.log("SUBMITTED")
 })
 
+let listId = document.getElementById("list_id")
+let listStart = document.getElementById("list_start")
+let listEnd = document.getElementById("list_end")
+let listBudget = document.getElementById("list_budget")
+let listSpent = document.getElementById("list_spent")
+let listItems = document.getElementById("list_items")
+let listTotal = document.getElementById("list_total")
+
 let addForm = document.querySelector("#add_item");
 let addBtn = document.querySelector("#add_btn")
-let list = document.querySelector("#list_items")
+let list = document.querySelector("#list-items")
 let newItems = 0;
 addBtn.addEventListener("click", () => {
     newItems++;
@@ -73,23 +81,58 @@ addBtn.addEventListener("click", () => {
     list.insertBefore(listItem, addForm);
 
     deleteBtn.addEventListener("click", () => {
-        delete_items(deleteBtn)
+        let numItemsTxt = listItems.textContent;
+        listItems.textContent = numItemsTxt.substring(0, numItemsTxt.indexOf(" ")+1) + (Number(numItemsTxt.substring(numItemsTxt.indexOf(" ")+1)) - 1);
+        let totalTxt = listTotal.textContent;
+        listTotal.textContent = totalTxt.substring(0, totalTxt.indexOf(" ")+1) + (Number(totalTxt.substring(totalTxt.indexOf(" ")+1)) - Number(priceValue.value)).toFixed(2);
+        list.removeChild(listItem);
     })
+
+    boughtValue.addEventListener("click", () => {
+        let spentTxt = listSpent.textContent;
+        if (boughtValue.checked) {
+            listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf(" ")+1) + (Number(spentTxt.substring(spentTxt.indexOf(" ")+1)) + Number(priceValue.value)).toFixed(2);
+        } else {
+            listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf(" ")+1) + (Number(spentTxt.substring(spentTxt.indexOf(" ")+1)) - Number(priceValue.value)).toFixed(2);
+        }
+    })
+
+    let numItemsTxt = listItems.textContent;
+    listItems.textContent = numItemsTxt.substring(0, numItemsTxt.indexOf(" ")+1) + (Number(numItemsTxt.substring(numItemsTxt.indexOf(" ")+1)) + 1);
+    let totalTxt = listTotal.textContent;
+    listTotal.textContent = totalTxt.substring(0, totalTxt.indexOf(" ")+1) + (Number(totalTxt.substring(totalTxt.indexOf(" ")+1)) + Number(price.value)).toFixed(2);
 
     item.value = ""
     addForm.querySelector("#category").options[0].selected = true;
     price.value = ""
     qty.value = ""
+    item.focus()
 })
-
-function delete_items(btn) {
-    let parent = btn.parentElement;
-    list.removeChild(parent);
-}
 
 let deleteBtns = document.querySelectorAll("#delete_item");
 deleteBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-        delete_items(btn)
+        let parent = btn.parentElement;
+        list.removeChild(parent);
+        let numItemsTxt = listItems.textContent;
+        listItems.textContent = numItemsTxt.substring(0, numItemsTxt.indexOf(" ")+1) + (Number(numItemsTxt.substring(numItemsTxt.indexOf(" ")+1)) - 1);
+        let price = parent.querySelector("#new_price");
+        let totalTxt = listTotal.textContent;
+        listTotal.textContent = totalTxt.substring(0, totalTxt.indexOf(" ")+1) + (Number(totalTxt.substring(totalTxt.indexOf(" ")+1)) - Number(price.value)).toFixed(2);
+    })
+})
+
+let checkboxes = document.querySelectorAll("#bought");
+checkboxes.forEach(chk => {
+    chk.addEventListener("click", () => {
+        console.log("CHANGE")
+        let parent = chk.parentElement;
+        let price = parent.querySelector("#new_price");
+        let spentTxt = listSpent.textContent;
+        if (chk.checked) {
+            listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf(" ")+1) + (Number(spentTxt.substring(spentTxt.indexOf(" ")+1)) + Number(price.value)).toFixed(2);
+        } else {
+            listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf(" ")+1) + (Number(spentTxt.substring(spentTxt.indexOf(" ")+1)) - Number(price.value)).toFixed(2);
+        }
     })
 })

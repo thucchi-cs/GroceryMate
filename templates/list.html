@@ -6,24 +6,24 @@
     <form id="all_items" action="/update_list" method="post">
         <input name="list_id" type="number" hidden value={{grocery_list["id"]}}>
     
-        <p>ID: {{grocery_list["id"]}}</p>
-        <p>Start: {{grocery_list["start"]}}</p>
-        <p>End: {{grocery_list["end"]}}</p>
-        <p>Budget: {{grocery_list["budget"]}}</p>
-        <p>Spent: {{grocery_list["spent"]}}</p>
-        <p>Items: {{grocery_list["items"]}}</p>
-        <p>Total: {{grocery_list["total"]}}</p>
+        <p id="list_id">ID: {{grocery_list["id"]}}</p>
+        <p id="list_start">Start: {{grocery_list["start"]}}</p>
+        <p id="list_end">End: {{grocery_list["end"]}}</p>
+        <p id="list_budget">Budget: {{grocery_list["budget"]}}</p>
+        <p id="list_spent">Spent: {{grocery_list["spent"]}}</p>
+        <p id="list_items">Items: {{grocery_list["items"]}}</p>
+        <p id="list_total">Total: {{grocery_list["total"]}}</p>
     
-        <div id="list_items">
+        <div id="list-items">
             {% for item in items %}
                 <li>
                     <input type="number" name="new_id" hidden value={{item["id"]}}>
-                    <input type="checkbox" name="bought" value={{item["id"]}} {% if item["bought"] %}checked{% endif %}>
+                    <input type="checkbox" id="bought" name="bought" value={{item["id"]}} {% if item["bought"] %}checked{% endif %}>
                     <span>{{item["item"]}} {{item["cat_id"]}} {{item["qty"]}} {{item["price"]}}</span>
                     <input type="text" name="new_item" hidden value={{item["item"]}}>
                     <input type="number" name="new_category_id" hidden value={{item["cat_id"]}}>
                     <input type="number" name="new_quantity" hidden value={{item["qty"]}}>
-                    <input type="number" name="new_price" hidden value={{item["price"]}}>
+                    <input type="number" name="new_price" hidden value={{item["price"]}} id="new_price">
                     <button id="delete_item" type="button">-</button>
                 </li>
             {% endfor %}
