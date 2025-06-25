@@ -1,15 +1,20 @@
 from flask import redirect, session, flash
 from functools import wraps
 from werkzeug.security import check_password_hash
+import datetime
 
 def format_usd(num):
     if ((type(num) != int) and (type(num) != float)):
         return num
-    print(num)
     return f'$%0.2f' % float(num)
 
 def capitalize(s):
     return s.capitalize()
+
+# Format date
+def format_date(date):
+    # date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    return date.strftime("%d/%m/%Y")
 
 # Check if currently logged in
 def login_required(f):
@@ -26,6 +31,7 @@ def set_session_id(cur, username):
     cur.execute(f"SELECT * FROM users WHERE username='{username}';")
     user = cur.fetchall()[0]
     session["user_id"] = user[0]
+    session["username"] = user[1]
     session["is_setup"] = user[4]
     cur.execute(f"SELECT * FROM categories WHERE user_id=1 OR user_id={session["user_id"]};")
     categories = cur.fetchall()
@@ -61,3 +67,9 @@ def login(cur, username, pwd):
         return False
     hashed_pwd = user[0][2]
     return check_password_hash(hashed_pwd, pwd)
+
+def find_categories(id):
+    for cat in session["categories"]:
+        if cat["id"] == id:
+            return cat["category"]
+    return None

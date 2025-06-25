@@ -2,58 +2,103 @@
 
 {% block body %}
 
-    This week's list
     <form id="all_items" action="/update_list" method="post">
         <input name="list_id" type="number" hidden value={{grocery_list["id"]}}>
-    
-        <p id="list_id">ID: {{grocery_list["id"]}}</p>
-        <p id="list_start">Start: {{grocery_list["start"]}}</p>
-        <p id="list_end">End: {{grocery_list["end"]}}</p>
-        <p id="list_budget">Budget: {{grocery_list["budget"]}}</p>
-        <p id="list_spent">Spent: {{grocery_list["spent"]}}</p>
-        <p id="list_items">Items: {{grocery_list["items"]}}</p>
-        <p id="list_total">Total: {{grocery_list["total"]}}</p>
-    
-        <div id="list-items">
-            {% for item in items %}
-                <li>
-                    <input type="number" name="new_id" hidden value={{item["id"]}}>
-                    <input type="checkbox" id="bought" name="bought" value={{item["id"]}} {% if item["bought"] %}checked{% endif %}>
-                    <span>{{item["item"]}} {{item["cat_id"]}} {{item["qty"]}} {{item["price"]}}</span>
-                    <input type="text" name="new_item" hidden value={{item["item"]}}>
-                    <input type="number" name="new_category_id" hidden value={{item["cat_id"]}}>
-                    <input type="number" name="new_quantity" hidden value={{item["qty"]}}>
-                    <input type="number" name="new_price" hidden value={{item["price"]}} id="new_price">
-                    <button id="delete_item" type="button">-</button>
-                </li>
-            {% endfor %}
+        <div class="grocery-page">
+            <div class="grocery-card">
+                <h1 class="grocery-title">This Week's Groceries</h1>
 
-            <div id="add_item">
-                <li>
-                    <input autocomplete="off" id="item" type="text" placeholder="Add an item" name="item">
-                    <select name="category" id="category">
-                        <option selected disabled>Category</option>
-                        {% for cat in categories %}
-                        <option value={{cat["id"]}}>{{cat["category"]|cap}}</option>
-                        {% endfor %}
-                    </select>
-                    <input autocomplete="off" id="qty" type="number" step="1" min="1" placeholder="Quantity" name="qty">
-                    <input autocomplete="off" id="price" type="number" step="0.01" min="0.01" placeholder="$ Price" name="price">
-                    <button type="button" class="confirm" id="add_btn">Confirm</button>
-                </li>
+                <!-- Date Range -->
+                <div class="grocery-date">{{grocery_list["start"]|date}} - {{grocery_list["end"]|date}}</div>
+                <hr>
+
+                <!-- Summary Grid -->
+                <div class="summary-grid">
+                    <strong><div class="summary-item" id="list_budget">Budget: {{grocery_list["budget"]|usd}}</div></strong>
+                    <strong><div class="summary-item" id="list_items">Items: {{grocery_list["items"]}}</div></strong>
+                    <strong><div class="summary-item" id="list_total">Total: {{grocery_list["total"]|usd}}</div></strong>
+                    <strong><div class="summary-item" id="list_spent">Spent: {{grocery_list["spent"]|usd}}</div></strong>
+                </div>
+                
+                <hr>
+                
+                <p id="warning"></p>
+
+                <!-- Table Header -->
+                <div class="grocery-table" id="list-items">
+                    <div class="grocery-header">
+                        <div class="grocery-cell cell-qty">Qty</div>
+                        <div class="grocery-cell cell-name">Item</div>
+                        <div class="grocery-cell cell-category">Category</div>
+                        <div class="grocery-cell cell-price">Price</div>
+                    </div>
+                    <hr class="divider-line" />
+
+                    <!-- Grocery Items -->
+                    {% for item in items %}
+                    <div class="grocery-row">
+                        <input type="number" name="new_id" hidden value={{item["id"]}}>
+                        <input type="text" name="new_item" hidden value={{item["item"]}}>
+                        <input type="number" name="new_category_id" hidden value={{item["cat_id"]}}>
+                        <input type="number" name="new_quantity" hidden value={{item["qty"]}}>
+                        <input type="number" name="new_price" hidden value={{item["price"]}} id="new_price">
+                        
+                        <div class="grocery-cell cell-check">
+                            <input type="checkbox" class="circle-checkbox" id="bought" name="bought" value={{item["id"]}} {% if item["bought"] %}checked{% endif %}>
+                        </div>
+                        <div class="grocery-cell cell-qty">{{ item["qty"] }}</div>
+                        <div class="grocery-cell cell-name">{{ item["item"]|cap}}</div>
+                        <div class="grocery-cell cell-category">{{ item["category"] }}</div>
+                        <div class="grocery-cell cell-price">{{ item["price"]|usd }}</div>
+                        <div class="grocery-cell cell-delete">
+                            <button class="delete-btn" title="Delete" id="delete_item">&minus;</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="grocery-row add-item-row" id="add_item">
+                        <!-- No checkbox -->
+                        <div class="grocery-cell cell-add">
+                            <button type="button" class="add-btn confirm" title="Add item" id="add_btn">
+                            <span>+</span>
+                            </button>
+                        </div>
+
+                        <!-- Quantity input -->
+                        <div class="grocery-cell cell-qty">
+                            <input type="number" name="quantity" class="input-field" placeholder="Qty" id="qty">
+                        </div>
+                        
+                        <!-- Item name -->
+                        <div class="grocery-cell cell-name">
+                            <input type="text" name="name" class="input-field" placeholder="Add an item" id="item">
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="grocery-cell cell-category">
+                            <!-- <input type="text" name="category" class="input-field" placeholder="Category"> -->
+                            <select name="category" id="category" class="input-field">
+                                <option selected disabled value="">Category</option>
+                                {% for cat in categories %}
+                                <option value={{cat["id"]}}>{{cat["category"]|cap}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Price -->
+                        <div class="grocery-cell cell-price">
+                            <input type="number" name="price" class="input-field" step="0.01" placeholder="$" id="price">
+                        </div>
+
+                        <!-- Add Button -->
+                        <div class="grocery-cell cell-delete"></div>
+                    </div>
+                </div>
+
+
             </div>
-
-
         </div>
-    </form>
-    
-    <form action="/" method="GET">
-        <button type="submit">Home</button>
-    </form>
-    
-    <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-    </form>
+
 
     <script type="module" src="/static/list.js"></script>
 

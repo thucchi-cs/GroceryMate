@@ -2,28 +2,27 @@
 
 {% block body %}
 
-    HISTROYT
+    <div class="history-page">
+        <h1 class="history-title">Your Past Grocery Lists</h1>
 
-    {% for list in lists %}
-        <div>
-            ID: {{list["id"]}}
-            Start: {{list["start"]}}
-            End: {{list["end"]}}
-            Budget: {{list["budget"]}}
-            Spent: {{list["spent"]}}
-            Items: {{list["items"]}}
-            Total: {{list["total"]}}
-            <a href="/list?id={{list["id"]}}">Go to list</a>
+        <div class="history-grid">
+            {% for list in lists %}
+            <a href="/list?id={{list["id"]}}">
+                <div class="history-card">
+                    <input type="number" id="id" value={{list["id"]}} hidden>
+                    <div class="card-dates"><strong>{{list["start"]|date}} - {{list["end"]|date}}</strong></div>
+                    <div class="card-line"><strong>Items:</strong> {{list["items"]}}</div>
+                    <hr>
+                    <div class="card-line"><strong>Total Cost:</strong> {{list["total"]|usd}}</div>
+                    <hr>
+                    <div class="card-line"><strong>Actually Spent:</strong> {{list["spent"]|usd}}</div>
+                    <hr>
+                    <div class="card-line"><strong>Budget:</strong> {{list["budget"]|usd}}</div>
+                    <hr>
+                </div>
+            </a>
+            {% endfor %}
         </div>
-    {% endfor %}
-
-    <form action="/" method="GET">
-        <button type="submit">Home</button>
-    </form>
-
-
-    <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-    </form>
+    </div>
 
 {% endblock %}

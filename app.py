@@ -40,12 +40,13 @@ cur = conn.cursor()
 
 app.jinja_env.filters["usd"] = h.format_usd
 app.jinja_env.filters["cap"] = h.capitalize
+app.jinja_env.filters["date"] = h.format_date
 
 @app.route("/")
 @h.login_required
 def index():
     if session.get("is_setup") or not session.get("user_id"):
-        return render_template("index.html") 
+        return redirect("/list") 
     else:
         return redirect("/settings")
 
@@ -74,7 +75,7 @@ def login():
         return redirect("/login")
     return render_template("login.html")
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["POST", "GET"])
 @h.login_required
 def logout():
     session.clear()
@@ -127,7 +128,7 @@ def settings():
     budget = cur.fetchall()[0][0]
 
     # Go to settings page
-    return render_template("settings.html", categories=session["categories"], budget=budget)
+    return render_template("settings.html", categories=session["categories"], budget=budget, page="settings")
 
 # This week's grocery list
 @app.route("/list")
@@ -153,13 +154,13 @@ def list():
             flash("List not found!")
             return redirect("/history")
 
-    grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": grocery_list[0][4], "spent": grocery_list[0][5], "items": grocery_list[0][6], "total": grocery_list[0][7]}    
+    grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": float(grocery_list[0][4]), "spent": float(grocery_list[0][5]), "items": grocery_list[0][6], "total": float(grocery_list[0][7])}    
     
     cur.execute(f"SELECT * FROM grocery_items WHERE list_id={grocery_list["id"]};")
     items = cur.fetchall()
-    items = [{"id":i[0], "list_id":i[1], "item":i[2], "cat_id":i[3], "price":i[4], "qty":i[5], "bought":i[6]} for i in items]
+    items = [{"id":i[0], "list_id":i[1], "item":i[2].replace("_"," "), "cat_id":i[3], "category":h.find_categories(i[3]), "price":float(i[4]), "qty":i[5], "bought":i[6]} for i in items]
 
-    return render_template("list.html", grocery_list=grocery_list, categories=session["categories"], items=items)
+    return render_template("list.html", grocery_list=grocery_list, categories=session["categories"], items=items, page="list")
 
 @app.route("/update_list", methods=["POST"])
 @h.login_required
@@ -199,8 +200,8 @@ def update():
 def history():
     cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} ORDER BY week_start DESC;")
     data = cur.fetchall()
-    lists = [{"id":d[0], "start":d[2], "end":d[3], "budget":d[4], "spent":d[5], "items":d[6], "total":d[7]} for d in data]
-    return render_template("history.html", lists=lists)
+    lists = [{"id":d[0], "start":d[2], "end":d[3], "budget":float(d[4]), "spent":float(d[5]), "items":d[6], "total":float(d[7])} for d in data]
+    return render_template("history.html", lists=lists, page="history")
 
 if __name__ == '__main__':
     app.run()

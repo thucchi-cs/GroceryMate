@@ -9,13 +9,49 @@
     </head>
     <script type="module" src="/static/script.js"></script>
 
+    {% if session['user_id'] %}
+    <nav class="navbar">
+        <!-- Logo -->
+        <div class="nav-left">
+            <a href="/" class="logo">🛒 GroceryMate</a>
+        </div>
+        
+        <!-- Link to pages -->
+        <div class="nav-center">
+
+            <a href="/list" class="nav-icon">
+                <img src="/static/imgs/check.png" alt="My List">
+                <span class="nav-link {% if page == "list" %}active {% endif %}"">My List</span>
+            </a>
+            <a href="/history" class="nav-icon">
+                <img src="/static/imgs/history.png" alt="History">
+                <span class="nav-link {% if page == "history" %}active {% endif %}"">History</span>
+            </a>
+            <a href="/settings" class="nav-icon">
+                <img src="/static/imgs/charts.png" alt="Settings">
+                <span class="nav-link {% if page == "settings" %}active {% endif %}"">Settings</span>
+            </a>
+        </div>
+        
+        <!-- Username and log out option -->
+        <div class="nav-right">
+            <div class="nav-item dropdown">
+                <button class="dropbtn">{{session["username"]}}</button>
+                <div class="dropdown-content">
+                    <a href="/logout">Log out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
     <header>
         <div class="alert alert-primary alert-dismissible text-center fade show" role="alert" id="flash-msg" {% if not get_flashed_messages() %} hidden {% endif %}>
             <span id="msg">{{ get_flashed_messages() | join(" ") }}</span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </header>
-
+            
     <body>
         {% block body %}{% endblock %}
     </body>

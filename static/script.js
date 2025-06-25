@@ -25,3 +25,12 @@ flashBtn.addEventListener("click", () => {
     flash.hidden = true;
     console.log("close")
 })
+
+export function countDecimalPlaces(number) {
+    let decimal = number.indexOf(".")
+    if (decimal == -1) {
+        return 0;
+    }
+    number = number.substring(decimal+1, number.length)
+    return number.length;
+}
