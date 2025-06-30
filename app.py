@@ -203,5 +203,11 @@ def history():
     lists = [{"id":d[0], "start":d[2], "end":d[3], "budget":float(d[4]), "spent":float(d[5]), "items":d[6], "total":float(d[7])} for d in data]
     return render_template("history.html", lists=lists, page="history")
 
+@app.route("/ping", methods=["POST"])
+def ping():
+    cur.execute(f"SELECT 1;")
+    conn.commit()
+    return "pinged"
+
 if __name__ == '__main__':
     app.run()

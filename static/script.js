@@ -34,3 +34,18 @@ export function countDecimalPlaces(number) {
     number = number.substring(decimal+1, number.length)
     return number.length;
 }
+
+let ping;
+
+document.addEventListener("DOMContentLoaded", () => {
+    ping = setInterval(() => {
+        console.log("HEY");
+        fetch("/ping", {
+            method: "POST"
+        });
+    }, 60000)
+})
+
+window.addEventListener('beforeunload', () => {
+    clearInterval(ping)
+});

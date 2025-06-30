@@ -3,6 +3,8 @@
 An easy to use web application to keep track of your grocery lists over the weeks. It allows you to create lists, check off items, and keep track of spending and budget.
 [Go to website ->](https://grocerymate.onrender.com/login)
 
+Note: this website uses Render free plan so it will take a couple minutes to load up initially.
+
 ## How to Use
 Log in or register for an account. Passwords are encrypted into the database. If you want to test out the app, we have a testing account:
 
