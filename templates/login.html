@@ -2,13 +2,47 @@
 
 {% block body %}
 
-    Login
-    <a href="/register">Regster</a>
+    <div class="login-page">
+
+        <!-- Big Title -->
+        <h1 class="login-brand">GroceryMate</h1>
+
+        <div class="login-card">
+            <h2 class="login-title">Log in</h2>
+            <p class="login-tagline">Every item. Every dollar. Every week.</p>
+
+            <form method="POST" action="/login">
+                <label for="username" class="login-label">Username</label>
+                <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username" class="login-input">
+
+                <label for="password" class="login-label">Password</label>
+                <input autocomplete="off" type="password" name="password" placeholder="Password" id="password" class="login-input">
+
+                <div class="show-password">
+                    <input type="checkbox" id="show-password">
+                    <label for="show-password">Show password</label>
+                </div>
+
+                <button type="submit" class="login-button">Log in</button>
+            </form>
+
+            <!-- Option to register -->
+            <p class="register-text">
+                Don't have an account?
+                <a href="/register">Register</a>
+            </p>
+
+        </div>
+    </div>
+
+
+    <!-- Login -->
+    <!-- <a href="/register">Regster</a>
     <form action="/login" method="POST">
         <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username">
         <input autocomplete="off" type="password" name="password" placeholder="Password" id="password">
         <button type="button">Log in</button>
-    </form>
+    </form> -->
 
     <script type="module" src="/static/login.js"></script>
 

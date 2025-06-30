@@ -21,3 +21,17 @@ btn.addEventListener("click", () => {
     console.log("submitting")
     submitForm(form);
 })
+
+let showPassword = document.getElementById("show-password")
+// When toggled
+showPassword.addEventListener("click", () => {
+    let passwords = document.querySelectorAll("#password")
+    for (let password of passwords) {
+        // change visibility
+        if (showPassword.checked) {
+            password.type = "text"
+        } else {
+            password.type = "password"
+        }
+    };
+})

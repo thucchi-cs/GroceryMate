@@ -604,3 +604,116 @@ body {
     text-align: center;
     color: rgb(255, 60, 0);
 }
+
+/* Page center alignment */
+.login-page {
+  height: 100vh;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Card */
+.login-card {
+  background-color: rgb(255, 243, 186);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+/* Title */
+.login-title {
+  font-size: 1.8rem;
+  text-align: center;
+  color: #2f2f2f;
+  margin-bottom: 0.25rem;
+}
+
+/* Tagline */
+.login-tagline {
+  font-size: 1rem;
+  text-align: center;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* Labels and inputs */
+.login-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #2f2f2f;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Show password checkbox */
+.show-password {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+/* Submit button */
+.login-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #218838;
+}
+
+.login-brand {
+  position: relative;
+  z-index: 2;
+  font-size: 3rem;
+  color: #1e8623;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-family: 'Segoe UI', sans-serif;
+  text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.4);
+}
+
+.register-text {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}
+  
+.register-text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+  
+.register-text a:hover {
+    text-decoration: underline;
+}
