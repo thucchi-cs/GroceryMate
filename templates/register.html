@@ -2,15 +2,49 @@
 
 {% block body %}
 
-    Register
-    <a href="/login">Login</a>
-    {{h}}
-    <form action="/register" method="post">
-        <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username">
-        <input autocomplete="off" type="password" name="password" placeholder="Password" id="password">
-        <input autocomplete="off" type="password" name="password2" placeholder="Password Confirmation" id="password2">
-        <button type="button">Register</button>
-    </form>
+    <div class="login-page">
+
+        <!-- Big Title -->
+        <h1 class="login-brand">GroceryMate</h1>
+
+        <div class="login-card">
+            <h2 class="login-title">Register</h2>
+            <p class="login-tagline">Every item. Every dollar. Every week.</p>
+
+            <form method="POST" action="/register">
+                <label for="username" class="login-label">Username</label>
+                <input autofocus autocomplete="off" type="text" name="username" placeholder="Username" id="username" class="login-input">
+
+                <label for="password" class="login-label">Password</label>
+                <input autocomplete="off" type="password" name="password" placeholder="Password" id="password" class="login-input">
+                
+                <p>Password Requirements:</p>
+                <div class="password-requirements">
+                    <li>At least 8 characters</li>
+                    <li>Uppercase and lowercase letters</li>
+                    <li>A special character</li>
+                    <li>A number</li>
+                </div>
+
+                <label for="password2" class="login-label">Password Confirmation</label>
+                <input autocomplete="off" type="password" name="password2" placeholder="Password Confirmation" id="password2" class="login-input">
+
+                <div class="show-password">
+                    <input type="checkbox" id="show-password">
+                    <label for="show-password">Show password</label>
+                </div>
+
+                <button type="button" class="login-button">Register</button>
+            </form>
+
+            <!-- Option to register -->
+            <p class="register-text">
+                Already have an account?
+                <a href="/login">Log In</a>
+            </p>
+
+        </div>
+    </div>
 
     <script type="module" src="/static/register.js"></script>
 

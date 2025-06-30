@@ -717,3 +717,8 @@ body {
 .register-text a:hover {
     text-decoration: underline;
 }
+
+.password-requirements {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
