@@ -26,5 +26,15 @@ This web app was originally made by Thuc Chi Do ([thucchi-cs](https://github.com
 
 This website was made with Python, JavaScript, HTML, and CSS. I used Flask to handle routing in this app. psycopg2 was used to connect to my online PostgreSQL on Neon. This website is also deployed on Render.
 
+### Made for Hack Club
+[![Athena Award Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Faward.athena.hackclub.com%2Fapi%2Fbadge)](https://award.athena.hackclub.com?utm_source=readme)
+<div>
+  <a href="https://shipwrecked.hackclub.com/?t=ghrm" target="_blank">
+    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/739361f1d440b17fc9e2f74e49fc185d86cbec14_badge.png" 
+         alt="This project is part of Shipwrecked, the world's first hackathon on an island!" 
+         style="width: 35%;">
+  </a>
+</div>
+
 ## Plan For Next Steps
 I am planning to add a section that gives you summaries of your past spending patterns using charts and graphs. These summaries would provide you insights on how much you averagely spend and what you are mostly spending on.
