@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <h1>List</h1>
+    <li>something</li>
+    <li>whoaaaaa</li>
+
+    <form action="/settings" method="GET">
+        <button type="submit">Settings</button>
+    </form>
+
+    <form action="/list" method="GET">
+        <button type="submit">List</button>
+    </form>
+
+    <form action="/history" method="GET">
+        <button type="submit">History</button>
+    </form>
+
+
+    <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+
+{% endblock %}

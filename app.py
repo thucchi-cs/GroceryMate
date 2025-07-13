@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, jsonify, render_template, redirect, request, session, flash
 from flask_session import Session
 from supabase import create_client, Client
 import helpers as h
@@ -133,7 +133,7 @@ def settings():
 # This week's grocery list
 @app.route("/list")
 @h.login_required
-def list():
+def grocery_list():
     if not request.args.get("id"):
         sunday = date.today() - timedelta(days = date.today().isoweekday() % 7)
         cur.execute(f"SELECT * FROM grocery_lists WHERE week_start='{sunday}' AND user_id={session["user_id"]};")
@@ -202,6 +202,57 @@ def history():
     data = cur.fetchall()
     lists = [{"id":d[0], "start":d[2], "end":d[3], "budget":float(d[4]), "spent":float(d[5]), "items":d[6], "total":float(d[7])} for d in data]
     return render_template("history.html", lists=lists, page="history")
+
+@app.route("/analysis")
+@h.login_required
+def analysis():
+    return render_template("analysis.html")
+
+@app.route("/spent_data")
+@h.login_required
+def get_spent_data():
+    sd = []
+    td = date.today()
+    first = date(td.year, td.month, 1)
+    sunday = first - timedelta(days = first.isoweekday() % 7)
+    if ((first.isoweekday()+1) % 8) <= 4:
+        sd.append(sunday)
+    sunday += timedelta(days=7)
+    while sunday.month <= td.month:
+        sd.append(sunday)
+        sunday += timedelta(days=7)
+
+    next_first = date(td.year, td.month+1, 1)
+    sunday = next_first - timedelta(days = next_first.isoweekday() % 7)
+    if ((next_first.isoweekday()+1) % 8) <= 4:
+        if sunday in sd:
+            sd.remove(sunday)
+
+    spent_data = []
+    dates_data = []
+    budget_data = []
+
+    cur.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'grocery_lists';")
+    list_keys = cur.fetchall()
+    list_keys = [k[0] for k in list_keys]
+    print(list_keys) 
+    for sunday in sd:
+        cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
+        data = cur.fetchall()
+        if len(data) > 0:
+            data = {list_keys[i]: data[0][i] for i in range(len(list_keys))}
+            spent_data.append(float(data["spent"]))
+            budget_data.append(float(data["budget"]))
+            dates_data.append(f"{data["week_start"].strftime("%d/%m")} - {data["week_end"].strftime("%d/%m")}")
+        else:
+            spent_data.append(None)
+            budget_data.append(None)
+            dates_data.append(f"{sunday.strftime("%d/%m")} - {(sunday + timedelta(days=6)).strftime("%d/%m")}")
+        print(data)
+
+    for s in sd:
+        print(s, end="   ")
+    return jsonify({"sundays":sd, "keys":list_keys, "spent":spent_data, "budget":budget_data, "dates":dates_data})
 
 @app.route("/ping", methods=["POST"])
 def ping():
