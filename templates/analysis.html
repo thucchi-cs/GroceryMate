@@ -2,25 +2,9 @@
 
 {% block body %}
 
-    <h1>List</h1>
-    <li>something</li>
-    <li>whoaaaaa</li>
+    <canvas id="chart"></canvas>
 
-    <form action="/settings" method="GET">
-        <button type="submit">Settings</button>
-    </form>
-
-    <form action="/list" method="GET">
-        <button type="submit">List</button>
-    </form>
-
-    <form action="/history" method="GET">
-        <button type="submit">History</button>
-    </form>
-
-
-    <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-    </form>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="/static/analysis.js"></script>
 
 {% endblock %}

@@ -73,28 +73,3 @@ def find_categories(id):
         if cat["id"] == id:
             return cat["category"]
     return None
-
-
-def sundays():
-    sd = []
-    date = datetime.date
-    td = datetime.date.today() - datetime.timedelta(days=150)
-    first = datetime.date(td.year, td.month, 1)
-    sunday = first - datetime.timedelta(days = first.isoweekday() % 7)
-    if ((first.isoweekday()+1) % 8) <= 4:
-        sd.append(sunday)
-    sunday += datetime.timedelta(days=7)
-    while sunday.month <= td.month:
-        sd.append(sunday)
-        sunday += datetime.timedelta(days=7)
-
-    next_first = datetime.date(td.year, td.month+1, 1)
-    sunday = next_first - datetime.timedelta(days = next_first.isoweekday() % 7)
-    if ((next_first.isoweekday()+1) % 8) <= 4:
-        if sunday in sd:
-            sd.remove(sunday)
-
-    for s in sd:
-        print(s, end="   ")
-
-sundays()
