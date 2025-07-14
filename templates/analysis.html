@@ -2,7 +2,21 @@
 
 {% block body %}
 
-    <canvas id="chart"></canvas>
+    <div style="display: inline-flex;">
+        <canvas id="spending_chart-weeks"></canvas>
+        <div id="weeks_summary">
+            <h1>Summary</h1>
+            <p id="total">Total Spent: </p>
+            <p id="avg">Average Each Week: </p>
+            <p id="over_budget">Total Over Budget: </p>
+            <p id="most_bought">Most Bought Items:</p>
+        </div>
+    </div>
+
+    <div style="display: inline-flex;">
+        <canvas class="chart" id="categories_chart-frequency"></canvas>
+        <canvas class="chart" id="categories_chart-values"></canvas>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="/static/analysis.js"></script>

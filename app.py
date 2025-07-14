@@ -230,12 +230,19 @@ def get_spent_data():
 
     spent_data = []
     dates_data = []
-    budget_data = []
+    budget_data = [] 
 
     cur.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'grocery_lists';")
     list_keys = cur.fetchall()
     list_keys = [k[0] for k in list_keys]
     print(list_keys) 
+
+    total = 0.0
+    count = 0
+    over_budget = 0.0
+    most_bought = {}
+    categories = {}
+
     for sunday in sd:
         cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
         data = cur.fetchall()
@@ -244,15 +251,37 @@ def get_spent_data():
             spent_data.append(float(data["spent"]))
             budget_data.append(float(data["budget"]))
             dates_data.append(f"{data["week_start"].strftime("%d/%m")} - {data["week_end"].strftime("%d/%m")}")
+            total += spent_data[-1]
+            count += 1
+            if spent_data[-1] > budget_data[-1]:
+                over_budget += spent_data[-1] - budget_data[-1]
+
+            cur.execute(f"SELECT * FROM grocery_items WHERE list_id={data["id"]} AND bought=true;")
+            items = cur.fetchall()
+            for i in items:
+                most_bought[i[2]] = most_bought.get(i[2], 0) + int(i[5])
+                category = categories.get(h.find_categories(i[3]), {"count": 0, "value": 0.0})
+                categories.update({h.find_categories(i[3]): {
+                    "count": category["count"]+1,
+                    "value": category["value"]+float(i[4])
+                    }})
         else:
             spent_data.append(None)
             budget_data.append(None)
             dates_data.append(f"{sunday.strftime("%d/%m")} - {(sunday + timedelta(days=6)).strftime("%d/%m")}")
         print(data)
 
+    avg = total/count
+
+    most_bought = dict(sorted(most_bought.items(), key=lambda item:item[1])[-3:])
+    print(list(most_bought.keys()))
+
+    print("\nYAY\n")
+    print(categories)
+
     for s in sd:
         print(s, end="   ")
-    return jsonify({"sundays":sd, "keys":list_keys, "spent":spent_data, "budget":budget_data, "dates":dates_data})
+    return jsonify({"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories})
 
 @app.route("/ping", methods=["POST"])
 def ping():

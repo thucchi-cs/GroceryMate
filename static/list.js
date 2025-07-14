@@ -1,4 +1,4 @@
-import { flashMsg, countDecimalPlaces } from "./script.js";
+import { flashMsg, countDecimalPlaces, submitOnEnter } from "./script.js";
 
 let changed = false;
 
@@ -37,6 +37,7 @@ function checkBudget() {
 let addForm = document.querySelector("#add_item");
 let addBtn = document.querySelector("#add_btn")
 let list = document.querySelector("#list-items")
+submitOnEnter(addForm.querySelectorAll("input"), addBtn)
 let newItems = 0;
 addBtn.addEventListener("click", () => {
     newItems++;

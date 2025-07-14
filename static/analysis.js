@@ -1,8 +1,20 @@
-async function createChart() {
+async function createWeeksCharts() {
     const response = await fetch("/spent_data");
     const result = await response.json();
-    
-    let chartCanvas = document.getElementById("chart");
+
+    let summary = document.getElementById("weeks_summary");
+    summary.querySelector("#total").textContent += `$${result.total.toFixed(2)}`;
+    summary.querySelector("#avg").textContent += `$${result.avg.toFixed(2)}`;
+    summary.querySelector("#over_budget").textContent += `$${result.over_budget.toFixed(2)}`;
+    let most_bought = summary.querySelector("#most_bought");
+    for (let item in result.most_bought) {
+        console.log(item)
+        let p = document.createElement("p");
+        p.innerHTML= `• ${item} - ${result.most_bought[item]}`;
+        most_bought.appendChild(p)
+    }
+
+    let chartCanvas = document.getElementById("spending_chart-weeks");
 
     let colors = Array(result.spent.length).fill("rgba(8, 145, 8, 0.59)");
 
@@ -10,6 +22,25 @@ async function createChart() {
     let values = result.spent;
     let budget = result.budget;
 
+    await createSpendingCharts(chartCanvas, colors, labels, values, budget);
+
+    let chartCanvas2 = document.getElementById("categories_chart-frequency");
+    let chartCanvas3 = document.getElementById("categories_chart-values");
+    let categories = Object.keys(result.categories);
+    let catCounts = Object.values(result.categories).map(data => data.count)
+    let catValues = Object.values(result.categories).map(data => data.value)
+    console.log(categories)
+    console.log(catCounts)
+    console.log(catValues)
+    for (const key in result.categories) {
+        console.log(result.categories[key].count + " " + key + " " + result.categories[key].value)
+    }
+
+    await createCategoriesCharts(chartCanvas2, categories, catCounts, "frequency")
+    await createCategoriesCharts(chartCanvas3, categories, catValues, "values")
+}
+
+async function createSpendingCharts(chartCanvas, colors, labels, values, budget) {
     // Store data in array
     let data = {
         labels: labels,
@@ -37,7 +68,7 @@ async function createChart() {
     }
 
     // Create new chart
-    return new Chart(
+    new Chart(
         // element to be drawn on
         chartCanvas, {
 
@@ -84,8 +115,50 @@ async function createChart() {
                 }
             }
         }
-    })
-    
+    })   
 }
 
-await createChart()
+async function createCategoriesCharts(chartCanvas, labels, values, type) {
+    // Store data in array
+    let data = {
+        labels: labels,
+        datasets: [{
+            data: values
+        }]
+    }
+
+    // Create new chart
+    return new Chart(
+        // Element to be drawn on
+        chartCanvas, {
+
+        // Plug in data
+        type: "pie",
+        data: data,
+
+        // Customizations
+        options: {
+            responsive: true,
+            plugins: {
+                // Hide title
+                title: {
+                    display: false,
+                },
+                tooltip: {
+                    // Label units
+                    callbacks: {
+                        label: (context) => {
+                            const value = context.parsed;
+                            if (type == "frequency") {
+                                return `${value} transactions`
+                            }
+                            return `$${value.toFixed(2)}`
+                        }
+                    }
+                }
+            }
+        }
+    })
+}
+
+await createWeeksCharts();
