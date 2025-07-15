@@ -1,7 +1,7 @@
-from flask import redirect, session, flash
+from flask import jsonify, redirect, session, flash
 from functools import wraps
 from werkzeug.security import check_password_hash
-import datetime
+from datetime import date, timedelta
 
 def format_usd(num):
     if ((type(num) != int) and (type(num) != float)):
@@ -73,3 +73,23 @@ def find_categories(id):
         if cat["id"] == id:
             return cat["category"]
     return None
+
+# Get sunday of every week in given month
+def get_sundays(month: int, year: int):
+    sd = []
+    first = date(year, month, 1)
+    sunday = first - timedelta(days = first.isoweekday() % 7)
+    if ((first.isoweekday()+1) % 8) <= 4:
+        sd.append(sunday)
+    sunday += timedelta(days=7)
+    while sunday.month <= month:
+        sd.append(sunday)
+        sunday += timedelta(days=7)
+
+    next_first = date(year, month+1, 1)
+    sunday = next_first - timedelta(days = next_first.isoweekday() % 7)
+    if ((next_first.isoweekday()+1) % 8) <= 4:
+        if sunday in sd:
+            sd.remove(sunday)
+
+    return sd

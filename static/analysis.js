@@ -1,5 +1,5 @@
 async function createWeeksCharts() {
-    const response = await fetch("/spent_data");
+    const response = await fetch("/weeks_data");
     const result = await response.json();
 
     let summary = document.getElementById("weeks_summary");

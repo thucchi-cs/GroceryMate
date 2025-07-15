@@ -208,26 +208,52 @@ def history():
 def analysis():
     return render_template("analysis.html")
 
-@app.route("/spent_data")
+@app.route("/weeks_data")
 @h.login_required
-def get_spent_data():
-    sd = []
+def get_weeks_data():
     td = date.today()
-    first = date(td.year, td.month, 1)
-    sunday = first - timedelta(days = first.isoweekday() % 7)
-    if ((first.isoweekday()+1) % 8) <= 4:
-        sd.append(sunday)
-    sunday += timedelta(days=7)
-    while sunday.month <= td.month:
-        sd.append(sunday)
-        sunday += timedelta(days=7)
+    sd = h.get_sundays(td.month, td.year)
+    results = get_data(sd)
 
-    next_first = date(td.year, td.month+1, 1)
-    sunday = next_first - timedelta(days = next_first.isoweekday() % 7)
-    if ((next_first.isoweekday()+1) % 8) <= 4:
-        if sunday in sd:
-            sd.remove(sunday)
+    return jsonify(results)
+    
+@app.route("/months_data")
+@h.login_required
+def get_months_data():
+    td = date.today()
+    td = date(td.year, td.month, 15)
 
+    spent_data = []
+    dates_data = []
+    budget_data = [] 
+    categories = {}
+    total = 0.0
+    count = 0
+    over_budget = 0.0
+
+    for i in range(6):
+        day = td - timedelta(i*30)
+        sd = h.get_sundays(day.month, day.year)
+        results = get_data(sd, categories)
+        dates_data.append(day.strftime("%B"))
+        if results["total"] > 0:
+            total += results["total"]
+            spent_data.append(results["total"])
+            over_budget += results["over_budget"]
+            count += 1
+        else:
+            total += results["total"]
+            spent_data.append(results["total"])
+            over_budget += results["over_budget"]
+
+    if count != 0:
+        avg = total/count
+    else:
+        avg = 0
+    
+    return jsonify({"dates": dates_data, "spent": spent_data, "total": total, "count": count, "over_budget": over_budget, "categories": categories, "avg": avg})
+
+def get_data(sd, categories={}):
     spent_data = []
     dates_data = []
     budget_data = [] 
@@ -241,7 +267,6 @@ def get_spent_data():
     count = 0
     over_budget = 0.0
     most_bought = {}
-    categories = {}
 
     for sunday in sd:
         cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
@@ -271,17 +296,21 @@ def get_spent_data():
             dates_data.append(f"{sunday.strftime("%d/%m")} - {(sunday + timedelta(days=6)).strftime("%d/%m")}")
         print(data)
 
-    avg = total/count
+    if count != 0:
+        avg = total/count
+    else:
+        avg = 0
 
-    most_bought = dict(sorted(most_bought.items(), key=lambda item:item[1])[-3:])
-    print(list(most_bought.keys()))
+    if len(most_bought) > 0:
+        most_bought = dict(sorted(most_bought.items(), key=lambda item:item[1])[-3:])
+        print(len(most_bought))
 
     print("\nYAY\n")
     print(categories)
 
     for s in sd:
         print(s, end="   ")
-    return jsonify({"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories})
+    return {"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories}
 
 @app.route("/ping", methods=["POST"])
 def ping():
