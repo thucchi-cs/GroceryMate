@@ -225,13 +225,12 @@ def get_months_data():
 
     spent_data = []
     dates_data = []
-    budget_data = [] 
     categories = {}
     total = 0.0
     count = 0
     over_budget = 0.0
 
-    for i in range(6):
+    for i in range(5,-1, -1):
         day = td - timedelta(i*30)
         sd = h.get_sundays(day.month, day.year)
         results = get_data(sd, categories)
@@ -242,9 +241,7 @@ def get_months_data():
             over_budget += results["over_budget"]
             count += 1
         else:
-            total += results["total"]
-            spent_data.append(results["total"])
-            over_budget += results["over_budget"]
+            spent_data.append(None)
 
     if count != 0:
         avg = total/count

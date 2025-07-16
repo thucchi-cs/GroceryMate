@@ -723,7 +723,117 @@ body {
   margin-bottom: 1rem;
 }
 
-.chart {
-  max-width: 50%;
-  max-height: 70vh;
+.analysis-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.analysis-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #28a745;
+  padding-bottom: 0.5rem;
+  width: fit-content;
+}
+
+.analysis-card {
+  margin-top: 3rem;
+  background-color: #fffdf2;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 1100px;
+  width: 100%;
+  position: relative;
+}
+
+/* Notebook tabs */
+.analysis-tabs {
+  position: absolute;
+  top: -2.4rem;
+  left: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  background-color: #f7f99b;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  padding: 0.4rem 1rem;
+  border-radius: 10px 10px 0 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tab-btn.active {
+  background-color: #fffdf2;
+  border-bottom: 1px solid #fffdf2;
+}
+
+/* Tab content sections */
+.tab-content {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.tab-content.hidden {
+  display: none;
+}
+
+/* Top section: bar + summary */
+.analysis-top {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.analysis-bar-chart {
+  flex: 3;
+}
+
+.analysis-summary {
+  flex: 1;
+  background-color: #fcfcfc;
+  padding: 1rem;
+  border-left: 2px solid #e0e0e0;
+}
+
+.analysis-summary h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.analysis-summary p {
+  margin: 0.4rem 0;
+}
+
+.analysis-summary ul {
+  margin: 0.4rem 0 0 1.2rem;
+  padding-left: 0;
+}
+
+/* Bottom section: pie charts */
+.analysis-bottom {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.pie-chart {
+  margin: auto;
+  flex: 1;
+  text-align: center;
+  max-width: 40%;
+}
+
+.pie-chart h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2f2f2f;
 }

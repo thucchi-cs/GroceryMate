@@ -2,20 +2,74 @@
 
 {% block body %}
 
-    <div style="display: inline-flex;">
-        <canvas id="spending_chart-weeks"></canvas>
-        <div id="weeks_summary">
-            <h1>Summary</h1>
-            <p id="total">Total Spent: </p>
-            <p id="avg">Average Each Week: </p>
-            <p id="over_budget">Total Over Budget: </p>
-            <p id="most_bought">Most Bought Items:</p>
-        </div>
-    </div>
+    <div class="analysis-page">
+        <h1 class="analysis-title">Your Groceries Patterns</h1>
 
-    <div style="display: inline-flex;">
-        <canvas class="chart" id="categories_chart-frequency"></canvas>
-        <canvas class="chart" id="categories_chart-values"></canvas>
+        <div class="analysis-card">
+            <!-- Notebook-like Tabs -->
+            <div class="analysis-tabs">
+                <button class="tab-btn active" id="month">This Month</button>
+                <button class="tab-btn" id="sixmonths">Past 6 Months</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="month-tab">
+                <!-- Top section -->
+                <div class="analysis-top">
+                    <!-- Chart (Bar) -->
+                    <div class="analysis-bar-chart">
+                        <canvas id="spending_chart-weeks"></canvas>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div class="analysis-summary" id="weeks_summary">
+                        <h3>Summary</h3>
+                        <p id="total"><strong>Total Spent:</strong> </p>
+                        <p id="avg"><strong>Average:</strong> </p>
+                        <p id="over_budget"><strong>Total Over Budget:</strong> </p>
+                        <p id="most_bought"><strong>Most Bought Items:</strong></p>
+                    </div>
+                </div>
+
+                <!-- Bottom section -->
+                <div class="analysis-bottom">
+                    <div class="pie-chart">
+                        <h4>Categories by Frequency</h4>
+                        <canvas id="categories_chart-frequency"></canvas>
+                    </div>
+                    <div class="pie-chart">
+                        <h4>Categories by Value</h4>
+                        <canvas id="categories_chart-values"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Tab -->
+            <div class="tab-content hidden" id="sixmonths-tab">
+                <!-- Same structure, different chart IDs -->
+                <div class="analysis-top">
+                    <div class="analysis-bar-chart">
+                        <canvas id="spending_chart-months"></canvas>
+                    </div>
+                    <div class="analysis-summary" id="months_summary">
+                        <h3>Summary</h3>
+                        <p id="total"><strong>Total Spent:</strong> </p>
+                        <p id="avg"><strong>Average:</strong> </p>
+                        <p id="over_budget"><strong>Total Over Budget:</strong> </p>
+                    </div>
+                </div>
+                <div class="analysis-bottom">
+                    <div class="pie-chart">
+                        <h4>Categories by Frequency</h4>
+                        <canvas id="categories_months-frequency"></canvas>
+                    </div>
+                    <div class="pie-chart">
+                        <h4>Categories by Value</h4>
+                        <canvas id="categories_months-values"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
