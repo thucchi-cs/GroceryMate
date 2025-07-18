@@ -18,16 +18,27 @@
                 <div class="analysis-top">
                     <!-- Chart (Bar) -->
                     <div class="analysis-bar-chart">
+                        <h4>Spendings VS Budget</h4>
                         <canvas id="spending_chart-weeks"></canvas>
                     </div>
 
                     <!-- Summary Section -->
                     <div class="analysis-summary" id="weeks_summary">
-                        <h3>Summary</h3>
-                        <p id="total"><strong>Total Spent:</strong> </p>
-                        <p id="avg"><strong>Average:</strong> </p>
-                        <p id="over_budget"><strong>Total Over Budget:</strong> </p>
-                        <p id="most_bought"><strong>Most Bought Items:</strong></p>
+                        <h4>Summary</h4>
+                        <div class="summary-texts">
+                            <p><strong>Total Spent:</strong> </p>
+                            <p id="total"></p>
+                        </div>
+                        <div class="summary-texts">
+                            <p><strong>Average:</strong> </p>
+                            <p id="avg">    </p>
+                        </div>
+                        <div class="summary-texts">
+                            <p><strong>Total Over Budget:</strong> </p>
+                            <p id="over_budget">    </p>
+                        </div>
+                        <p><strong>Most Bought Items:</strong></p>
+                        <p id="most_bought">    </p>
                     </div>
                 </div>
 
@@ -35,10 +46,12 @@
                 <div class="analysis-bottom">
                     <div class="pie-chart">
                         <h4>Categories by Frequency</h4>
+                        <p hidden>No data</p>
                         <canvas id="categories_chart-frequency"></canvas>
                     </div>
                     <div class="pie-chart">
                         <h4>Categories by Value</h4>
+                        <p hidden>No data</p>
                         <canvas id="categories_chart-values"></canvas>
                     </div>
                 </div>
@@ -49,22 +62,34 @@
                 <!-- Same structure, different chart IDs -->
                 <div class="analysis-top">
                     <div class="analysis-bar-chart">
+                        <h4>Spendings VS Budget</h4>
                         <canvas id="spending_chart-months"></canvas>
                     </div>
                     <div class="analysis-summary" id="months_summary">
-                        <h3>Summary</h3>
-                        <p id="total"><strong>Total Spent:</strong> </p>
-                        <p id="avg"><strong>Average:</strong> </p>
-                        <p id="over_budget"><strong>Total Over Budget:</strong> </p>
+                        <h4>Summary</h4>
+                        <div class="summary-texts">
+                            <p><strong>Total Spent:</strong> </p>
+                            <p id="total"></p>
+                        </div>
+                        <div class="summary-texts">
+                            <p><strong>Average:</strong> </p>
+                            <p id="avg">    </p>
+                        </div>
+                        <div class="summary-texts">
+                            <p><strong>Total Over Budget:</strong> </p>
+                            <p id="over_budget">    </p>
+                        </div>
                     </div>
                 </div>
                 <div class="analysis-bottom">
                     <div class="pie-chart">
                         <h4>Categories by Frequency</h4>
+                        <p hidden>No data</p>
                         <canvas id="categories_months-frequency"></canvas>
                     </div>
                     <div class="pie-chart">
                         <h4>Categories by Value</h4>
+                        <p hidden>No data</p>
                         <canvas id="categories_months-values"></canvas>
                     </div>
                 </div>

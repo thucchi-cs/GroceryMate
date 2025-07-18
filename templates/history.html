@@ -5,7 +5,11 @@
     <div class="history-page">
         <h1 class="history-title">Your Past Grocery Lists</h1>
 
+        {% if lists|length == 0 %}
+            <h2 id="no-data">You have no past grocery lists.</h2>
+        {% endif %}
         <div class="history-grid">
+
             {% for list in lists %}
             <a href="/list?id={{list["id"]}}">
                 <div class="history-card">

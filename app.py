@@ -213,7 +213,9 @@ def analysis():
 def get_weeks_data():
     td = date.today()
     sd = h.get_sundays(td.month, td.year)
-    results = get_data(sd)
+    results = get_data(sd, {})
+    print("\nRESULTS")
+    print(results)
 
     return jsonify(results)
     
@@ -229,6 +231,7 @@ def get_months_data():
     total = 0.0
     count = 0
     over_budget = 0.0
+    budget_data = []
 
     for i in range(5,-1, -1):
         day = td - timedelta(i*30)
@@ -240,17 +243,21 @@ def get_months_data():
             spent_data.append(results["total"])
             over_budget += results["over_budget"]
             count += 1
+            results["budget"] = [budget for budget in results["budget"] if budget]
+            budget = sum(results["budget"])
+            budget_data.append(budget)
         else:
             spent_data.append(None)
+            budget_data.append(None)
 
     if count != 0:
         avg = total/count
     else:
         avg = 0
     
-    return jsonify({"dates": dates_data, "spent": spent_data, "total": total, "count": count, "over_budget": over_budget, "categories": categories, "avg": avg})
+    return jsonify({"dates": dates_data, "spent": spent_data, "total": total, "count": count, "over_budget": over_budget, "categories": categories, "avg": avg, "budget":budget_data})
 
-def get_data(sd, categories={}):
+def get_data(sd, categories):
     spent_data = []
     dates_data = []
     budget_data = [] 
@@ -264,6 +271,7 @@ def get_data(sd, categories={}):
     count = 0
     over_budget = 0.0
     most_bought = {}
+    print("\nOG\n", categories)
 
     for sunday in sd:
         cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
@@ -307,7 +315,7 @@ def get_data(sd, categories={}):
 
     for s in sd:
         print(s, end="   ")
-    return {"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories}
+    return {"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories, "user_id":session["user_id"]}
 
 @app.route("/ping", methods=["POST"])
 def ping():
