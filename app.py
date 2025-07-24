@@ -156,7 +156,7 @@ def grocery_list():
 
     grocery_list = {"id": grocery_list[0][0], "start": grocery_list[0][2], "end": grocery_list[0][3], "budget": float(grocery_list[0][4]), "spent": float(grocery_list[0][5]), "items": grocery_list[0][6], "total": float(grocery_list[0][7])}    
     
-    cur.execute(f"SELECT * FROM grocery_items WHERE list_id={grocery_list["id"]};")
+    cur.execute(f"SELECT * FROM grocery_items WHERE list_id={grocery_list["id"]} ORDER BY id;")
     items = cur.fetchall()
     items = [{"id":i[0], "list_id":i[1], "item":i[2].replace("_"," "), "cat_id":i[3], "category":h.find_categories(i[3]), "price":float(i[4]), "qty":i[5], "bought":i[6]} for i in items]
 
@@ -195,9 +195,31 @@ def update():
 
     return "sup"
 
-@app.route("/add_items")
+@app.route("/add_items",methods=["POST"])
 @h.login_required
+def add():
+    print(request.form)
+    cur.execute(f"INSERT INTO grocery_items (list_id, item, category_id, price, quantity) VALUES ({int(request.form.get("list_id"))}, '{request.form.get("name")}', {int(request.form.get("category"))}, {float(request.form.get("price"))}, {int(request.form.get("quantity"))}) RETURNING id;")
+    conn.commit()
+    id = cur.fetchall()
+    return str(id[0][0])
 
+@app.route("/delete_items", methods=["POST"])
+@h.login_required
+def delete():
+    print(request.form)
+    cur.execute(f"DELETE FROM grocery_items WHERE id={request.form.get("new_id")};")
+    conn.commit()
+    return request.form
+
+@app.route("/check_items", methods=["POST"])
+@h.login_required
+def check():
+    print(bool(request.form.get("bought")))
+    bought = bool(request.form.get("bought"))
+    cur.execute(f"UPDATE grocery_items SET bought={bought} WHERE id={request.form.get("new_id")};")
+    conn.commit()
+    return request.form
 
 @app.route("/history")
 @h.login_required

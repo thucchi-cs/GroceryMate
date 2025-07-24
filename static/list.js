@@ -2,18 +2,22 @@ import { flashMsg, countDecimalPlaces, submitOnEnter } from "./script.js";
 
 let changed = false;
 
-window.addEventListener('beforeunload', (event) => {
-    console.log('User is about to leave the page!');
-    console.log(event)
-    if (changed) {
-        event.preventDefault()
-        let form = document.querySelector("#all_items");
-        let formData = new FormData(form);
-        let data = new URLSearchParams(formData);
-        navigator.sendBeacon("/update_list", data);
-        changed = false
-    }
-});
+// window.addEventListener('beforeunload', (event) => {
+//     console.log('User is about to leave the page!');
+//     console.log(event)
+//     if (changed) {
+//         event.preventDefault()
+//         let form = document.querySelector("#all_items");
+//         let formData = new FormData(form);
+//         let data = new URLSearchParams(formData);
+//         navigator.sendBeacon("/update_list", data);
+//         changed = false
+//     }
+// });
+
+// function updateList() {
+//     let budget = 
+// }
 
 
 let listBudget = document.getElementById("list_budget")
@@ -39,7 +43,7 @@ let addBtn = document.querySelector("#add_btn")
 let list = document.querySelector("#list-items")
 submitOnEnter(addForm.querySelectorAll("input"), addBtn)
 let newItems = 0;
-addBtn.addEventListener("click", () => {
+addBtn.addEventListener("click", async () => {
     newItems++;
     let item = addForm.querySelector("#item");
     let category = addForm.querySelector("#category").options[addForm.querySelector("#category").selectedIndex].text;
@@ -61,9 +65,23 @@ addBtn.addEventListener("click", () => {
         return
     }
 
-    let id = -newItems;
+    let form = document.querySelector("#add_item");
+    console.log(form)
+    let formData = new FormData(form);
+    let data = new URLSearchParams(formData);
+    // navigator.sendBeacon("/add_items", data);
+    let response = await fetch("/add_items", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data
+    })
+    let result = await response.json();
 
-    let listItem = document.createElement("div");
+    let id = result;
+
+    let listItem = document.createElement("form");
     listItem.classList.add("grocery-row");
     let text = document.createElement("span");
     text.innerHTML = item.value + " " + category + " " + qty.value + " " + price.value;
@@ -140,6 +158,11 @@ addBtn.addEventListener("click", () => {
     list.insertBefore(listItem, addForm);
 
     deleteBtn.addEventListener("click", () => {
+        console.log(listItem)
+        let formData = new FormData(listItem);
+        let data = new URLSearchParams(formData);
+        navigator.sendBeacon("/delete_items", data);
+
         let numItemsTxt = listItems.textContent;
         listItems.textContent = numItemsTxt.substring(0, numItemsTxt.indexOf(" ")+1) + (Number(numItemsTxt.substring(numItemsTxt.indexOf(" ")+1)) - 1);
         let totalTxt = listTotal.textContent;
@@ -181,6 +204,11 @@ let deleteBtns = document.querySelectorAll("#delete_item");
 deleteBtns.forEach(btn => {
     btn.addEventListener("click", () => {
         let parent = btn.parentElement.parentElement;
+        console.log(parent)
+        let formData = new FormData(parent);
+        let data = new URLSearchParams(formData);
+        navigator.sendBeacon("/delete_items", data);
+
         list.removeChild(parent);
         let numItemsTxt = listItems.textContent;
         listItems.textContent = numItemsTxt.substring(0, numItemsTxt.indexOf(" ")+1) + (Number(numItemsTxt.substring(numItemsTxt.indexOf(" ")+1)) - 1);
@@ -202,6 +230,11 @@ checkboxes.forEach(chk => {
     chk.addEventListener("click", () => {
         console.log("CHANGE")
         let parent = chk.parentElement.parentElement;
+        console.log(parent)
+        let formData = new FormData(parent);
+        let data = new URLSearchParams(formData);
+        navigator.sendBeacon("/check_items", data);
+
         let price = parent.querySelector("#new_price");
         let spentTxt = listSpent.textContent;
         if (chk.checked) {
