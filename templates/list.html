@@ -12,6 +12,7 @@
 
             <!-- Summary Grid -->
             <div class="summary-grid">
+                <input name="list_id" type="number" id="list_id" hidden value={{grocery_list["id"]}}>
                 <strong><div value={{grocery_list["budget"]}} class="summary-item" id="list_budget">Budget: {{grocery_list["budget"]|usd}}</div></strong>
                 <strong><div value={{grocery_list["items"]}} class="summary-item" id="list_items">Items: {{grocery_list["items"]}}</div></strong>
                 <strong><div value={{grocery_list["total"]}} class="summary-item" id="list_total">Total: {{grocery_list["total"]|usd}}</div></strong>

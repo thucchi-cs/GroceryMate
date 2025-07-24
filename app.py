@@ -166,31 +166,7 @@ def grocery_list():
 @h.login_required
 def update():
     print(request.form)
-    print(request.form.getlist("bought"))
-    list_id = request.form.get("list_id")
-    cur.execute(f"DELETE FROM grocery_items WHERE list_id={list_id};")
-    conn.commit()
-
-    boughts = request.form.getlist("bought")
-    ids = request.form.getlist("new_id")
-    items = request.form.getlist("new_item")
-    category_ids = request.form.getlist("new_category_id")
-    quantities = request.form.getlist("new_quantity")
-    prices = request.form.getlist("new_price")
-
-    new_items = [{"id":ids[i], "item": items[i], "category_id": category_ids[i], "qty": quantities[i], "price": prices[i]} for i in range(len(items))]
-    spent = 0
-    num_items = 0
-    total = 0
-    for item in new_items:
-        num_items += 1
-        total += float(item["price"])
-        bought =  item["id"] in boughts
-        spent += float(item["price"]) if bought else 0
-        cur.execute(f"INSERT INTO grocery_items (list_id, item, category_id, price, quantity, bought) VALUES ({int(list_id)}, '{item["item"]}', {int(item["category_id"])}, {float(item["price"])}, {int(item["qty"])}, {bought});")
-        conn.commit()
-    spent = round(spent, 2)
-    cur.execute(f"UPDATE grocery_lists SET num_items={num_items}, total={total}, spent={spent} WHERE id={list_id};")
+    cur.execute(f"UPDATE grocery_lists SET spent={request.form.get("spent")}, num_items={request.form.get("items")}, total={request.form.get("total")} WHERE id={request.form.get("id")};")
     conn.commit()
 
     return "sup"

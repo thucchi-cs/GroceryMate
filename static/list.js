@@ -2,23 +2,11 @@ import { flashMsg, countDecimalPlaces, submitOnEnter } from "./script.js";
 
 let changed = false;
 
-// window.addEventListener('beforeunload', (event) => {
-//     console.log('User is about to leave the page!');
-//     console.log(event)
-//     if (changed) {
-//         event.preventDefault()
-//         let form = document.querySelector("#all_items");
-//         let formData = new FormData(form);
-//         let data = new URLSearchParams(formData);
-//         navigator.sendBeacon("/update_list", data);
-//         changed = false
-//     }
-// });
-
-// function updateList() {
-//     let budget = 
-// }
-
+window.addEventListener('beforeunload', (event) => {
+    console.log('User is about to leave the page!');
+    console.log(event)
+    updateList()
+});
 
 let listBudget = document.getElementById("list_budget")
 let listSpent = document.getElementById("list_spent")
@@ -176,6 +164,10 @@ addBtn.addEventListener("click", async () => {
     })
 
     boughtValue.addEventListener("click", () => {
+        let formData = new FormData(listItem);
+        let data = new URLSearchParams(formData);
+        navigator.sendBeacon("/check_items", data);
+
         let spentTxt = listSpent.textContent;
         if (boughtValue.checked) {
             listSpent.textContent = spentTxt.substring(0, spentTxt.indexOf("$")+1) + (Number(spentTxt.substring(spentTxt.indexOf("$")+1)) + Number(priceValue.value)).toFixed(2);
@@ -246,6 +238,17 @@ checkboxes.forEach(chk => {
         checkBudget()
     })
 })
+
+function updateList() {
+    let data = {
+        id: document.getElementById("list_id").value,
+        items: listItems.textContent.substring(listItems.textContent.indexOf(":")+2),
+        total: listTotal.textContent.substring(listTotal.textContent.indexOf("$")+1),
+        spent: listSpent.textContent.substring(listSpent.textContent.indexOf("$")+1)
+    }
+    let params = new URLSearchParams(data);
+    navigator.sendBeacon("/update_list", params)
+}
 
 checkBudget()
 
