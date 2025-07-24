@@ -114,7 +114,7 @@ addBtn.addEventListener("click", () => {
     newCat.textContent = category;
     let newPrice = document.createElement("div");
     newPrice.classList.add("grocery-cell", "cell-price");
-    newPrice.textContent = price.value;
+    newPrice.textContent = "$" + price.value;
 
     let btnDiv = document.createElement("div");
     btnDiv.classList.add("grocery-cell", "cell-delete")

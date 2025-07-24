@@ -195,6 +195,10 @@ def update():
 
     return "sup"
 
+@app.route("/add_items")
+@h.login_required
+
+
 @app.route("/history")
 @h.login_required
 def history():
