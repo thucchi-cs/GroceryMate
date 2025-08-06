@@ -38,7 +38,6 @@ def connect_db():
 
     # Create a cursor object
     cur = conn.cursor()
-    print(type(cur))
     return conn,cur
 
 db = connect_db()
@@ -172,7 +171,6 @@ def grocery_list():
 @app.route("/update_list", methods=["POST"])
 @h.login_required
 def update():
-    print(request.form)
     conn2, cur2 = connect_db()
     cur2.execute(f"UPDATE grocery_lists SET spent={request.form.get("spent")}, num_items={request.form.get("items")}, total={request.form.get("total")} WHERE id={request.form.get("id")};")
     conn2.commit()
@@ -183,7 +181,6 @@ def update():
 @app.route("/add_items",methods=["POST"])
 @h.login_required
 def add():
-    print(request.form)
     cur.execute(f"INSERT INTO grocery_items (list_id, item, category_id, price, quantity) VALUES ({int(request.form.get("list_id"))}, '{request.form.get("name")}', {int(request.form.get("category"))}, {float(request.form.get("price"))}, {int(request.form.get("quantity"))}) RETURNING id;")
     conn.commit()
     id = cur.fetchall()
@@ -192,7 +189,6 @@ def add():
 @app.route("/delete_items", methods=["POST"])
 @h.login_required
 def delete():
-    print(request.form)
     cur.execute(f"DELETE FROM grocery_items WHERE id={request.form.get("new_id")};")
     conn.commit()
     return request.form
@@ -200,7 +196,6 @@ def delete():
 @app.route("/check_items", methods=["POST"])
 @h.login_required
 def check():
-    print(bool(request.form.get("bought")))
     bought = bool(request.form.get("bought"))
     cur.execute(f"UPDATE grocery_items SET bought={bought} WHERE id={request.form.get("new_id")};")
     conn.commit()
@@ -225,8 +220,6 @@ def get_weeks_data():
     td = date.today()
     sd = h.get_sundays(td.month, td.year)
     results = get_data(sd, {})
-    print("\nRESULTS")
-    print(results)
 
     return jsonify(results)
     
@@ -256,10 +249,10 @@ def get_months_data():
             count += 1
             results["budget"] = [budget for budget in results["budget"] if budget]
             budget = sum(results["budget"])
-            budget_data.append(budget)
+
         else:
             spent_data.append(None)
-            budget_data.append(None)
+        budget_data.append(None)
 
     if count != 0:
         avg = total/count
@@ -278,13 +271,11 @@ def get_data(sd, categories):
     cur2.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'grocery_lists';")
     list_keys = cur2.fetchall()
     list_keys = [k[0] for k in list_keys]
-    print(list_keys) 
 
     total = 0.0
     count = 0
     over_budget = 0.0
     most_bought = {}
-    print("\nOG\n", categories)
 
     for sunday in sd:
         cur2.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
@@ -312,7 +303,6 @@ def get_data(sd, categories):
             spent_data.append(None)
             budget_data.append(None)
             dates_data.append(f"{sunday.strftime("%d/%m")} - {(sunday + timedelta(days=6)).strftime("%d/%m")}")
-        print(data)
 
     if count != 0:
         avg = total/count
@@ -321,15 +311,9 @@ def get_data(sd, categories):
 
     if len(most_bought) > 0:
         most_bought = dict(sorted(most_bought.items(), key=lambda item:item[1])[-3:])
-        print(len(most_bought))
-
-    print("\nYAY\n")
-    print(categories)
 
     conn2.close()
 
-    for s in sd:
-        print(s, end="   ")
     return {"spent":spent_data, "budget":budget_data, "dates":dates_data, "total":total, "over_budget":over_budget, "avg":avg, "most_bought":most_bought, "categories":categories, "user_id":session["user_id"]}
 
 @app.route("/ping", methods=["POST"])

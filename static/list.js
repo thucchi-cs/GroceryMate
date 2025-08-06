@@ -3,8 +3,6 @@ import { flashMsg, countDecimalPlaces, submitOnEnter } from "./script.js";
 let changed = false;
 
 window.addEventListener('beforeunload', (event) => {
-    console.log('User is about to leave the page!');
-    console.log(event)
     updateList()
 });
 
@@ -54,7 +52,6 @@ addBtn.addEventListener("click", async () => {
     }
 
     let form = document.querySelector("#add_item");
-    console.log(form)
     let formData = new FormData(form);
     let data = new URLSearchParams(formData);
     // navigator.sendBeacon("/add_items", data);
@@ -146,7 +143,6 @@ addBtn.addEventListener("click", async () => {
     list.insertBefore(listItem, addForm);
 
     deleteBtn.addEventListener("click", () => {
-        console.log(listItem)
         let formData = new FormData(listItem);
         let data = new URLSearchParams(formData);
         navigator.sendBeacon("/delete_items", data);
@@ -196,7 +192,6 @@ let deleteBtns = document.querySelectorAll("#delete_item");
 deleteBtns.forEach(btn => {
     btn.addEventListener("click", () => {
         let parent = btn.parentElement.parentElement;
-        console.log(parent)
         let formData = new FormData(parent);
         let data = new URLSearchParams(formData);
         navigator.sendBeacon("/delete_items", data);
@@ -220,9 +215,7 @@ deleteBtns.forEach(btn => {
 let checkboxes = document.querySelectorAll("#bought");
 checkboxes.forEach(chk => {
     chk.addEventListener("click", () => {
-        console.log("CHANGE")
         let parent = chk.parentElement.parentElement;
-        console.log(parent)
         let formData = new FormData(parent);
         let data = new URLSearchParams(formData);
         navigator.sendBeacon("/check_items", data);
@@ -246,7 +239,6 @@ function updateList() {
         total: listTotal.textContent.substring(listTotal.textContent.indexOf("$")+1),
         spent: listSpent.textContent.substring(listSpent.textContent.indexOf("$")+1)
     }
-    console.log(data)
     let params = new URLSearchParams(data);
     navigator.sendBeacon("/update_list", params)
 }

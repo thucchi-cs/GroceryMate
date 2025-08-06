@@ -15,7 +15,6 @@ async function createWeeksCharts() {
     summary.querySelector("#over_budget").textContent += `$${result.over_budget.toFixed(2)}`;
     let most_bought = summary.querySelector("#most_bought");
     for (let item in result.most_bought) {
-        console.log(item)
         let p = document.createElement("p");
         p.innerHTML= `• ${item} - ${result.most_bought[item]}`;
         most_bought.appendChild(p)
@@ -37,12 +36,6 @@ async function createWeeksCharts() {
     if (categories.length > 0) {
         let catCounts = Object.values(result.categories).map(data => data.count)
         let catValues = Object.values(result.categories).map(data => data.value)
-        console.log(categories)
-        console.log(catCounts)
-        console.log(catValues)
-        for (const key in result.categories) {
-            console.log(result.categories[key].count + " " + key + " " + result.categories[key].value)
-        }
 
         CatChartWks1 = await createCategoriesCharts(chartCanvas2, categories, catCounts, "frequency")
         CatChartWks2 = await createCategoriesCharts(chartCanvas3, categories, catValues, "values")
@@ -77,12 +70,6 @@ async function createMonthsCharts() {
     if (categories.length > 0) {
         let catCounts = Object.values(result.categories).map(data => data.count)
         let catValues = Object.values(result.categories).map(data => data.value)
-        console.log(categories)
-        console.log(catCounts)
-        console.log(catValues)
-        for (const key in result.categories) {
-            console.log(result.categories[key].count + " " + key + " " + result.categories[key].value)
-        }
 
         CatChartMths1 = await createCategoriesCharts(chartCanvas2, categories, catCounts, "frequency")
         CatChartMths2 = await createCategoriesCharts(chartCanvas3, categories, catValues, "values")

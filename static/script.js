@@ -13,17 +13,14 @@ export function submitOnEnter(inputs, btn) {
 
 export function flashMsg(msg) {
     let flash = document.querySelector("#flash-msg")
-    console.log(flash);
     flash.hidden = false;
     flash.querySelector("#msg").innerHTML = msg
-    console.log("hi")
 }
 
 let flashBtn = document.querySelector(".btn-close");
 flashBtn.addEventListener("click", () => {
     let flash = document.querySelector("#flash-msg")
     flash.hidden = true;
-    console.log("close")
 })
 
 export function countDecimalPlaces(number) {
@@ -39,7 +36,6 @@ let ping;
 
 document.addEventListener("DOMContentLoaded", () => {
     ping = setInterval(() => {
-        console.log("HEY");
         fetch("/ping", {
             method: "POST"
         });
