@@ -246,6 +246,7 @@ function updateList() {
         total: listTotal.textContent.substring(listTotal.textContent.indexOf("$")+1),
         spent: listSpent.textContent.substring(listSpent.textContent.indexOf("$")+1)
     }
+    console.log(data)
     let params = new URLSearchParams(data);
     navigator.sendBeacon("/update_list", params)
 }

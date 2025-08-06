@@ -3,7 +3,7 @@ from flask_session import Session
 from supabase import create_client, Client
 import helpers as h
 from dotenv import load_dotenv
-from psycopg2 import pool
+from psycopg2 import pool,extensions
 import os
 from werkzeug.security import generate_password_hash
 from datetime import date, timedelta
@@ -18,25 +18,32 @@ Session(app)
 # Load environment variables
 load_dotenv()
 
-# Get the connection string from the environment variable
-connection_string = os.getenv('DATABASE_URL')
+def connect_db():
+    # Get the connection string from the environment variable
+    connection_string = os.getenv('DATABASE_URL')
 
-# Create a connection pool
-connection_pool = pool.SimpleConnectionPool(
-    1,  # Minimum number of connections in the pool
-    10,  # Maximum number of connections in the pool
-    connection_string
-)
+    # Create a connection pool
+    connection_pool = pool.SimpleConnectionPool(
+        1,  # Minimum number of connections in the pool
+        10,  # Maximum number of connections in the pool
+        connection_string
+    )
 
-# Check if the pool was created successfully
-if connection_pool:
-    print("Connection pool created successfully")
+    # Check if the pool was created successfully
+    if connection_pool:
+        print("Connection pool created successfully")
 
-# Get a connection from the pool
-conn = connection_pool.getconn()
+    # Get a connection from the pool
+    conn = connection_pool.getconn()
 
-# Create a cursor object
-cur = conn.cursor()
+    # Create a cursor object
+    cur = conn.cursor()
+    print(type(cur))
+    return conn,cur
+
+db = connect_db()
+conn:extensions.connection = db[0]
+cur:extensions.cursor = db[1]
 
 app.jinja_env.filters["usd"] = h.format_usd
 app.jinja_env.filters["cap"] = h.capitalize
@@ -166,8 +173,10 @@ def grocery_list():
 @h.login_required
 def update():
     print(request.form)
-    cur.execute(f"UPDATE grocery_lists SET spent={request.form.get("spent")}, num_items={request.form.get("items")}, total={request.form.get("total")} WHERE id={request.form.get("id")};")
-    conn.commit()
+    conn2, cur2 = connect_db()
+    cur2.execute(f"UPDATE grocery_lists SET spent={request.form.get("spent")}, num_items={request.form.get("items")}, total={request.form.get("total")} WHERE id={request.form.get("id")};")
+    conn2.commit()
+    conn2.close()
 
     return "sup"
 
@@ -264,8 +273,10 @@ def get_data(sd, categories):
     dates_data = []
     budget_data = [] 
 
-    cur.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'grocery_lists';")
-    list_keys = cur.fetchall()
+    conn2, cur2 = connect_db()
+
+    cur2.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'grocery_lists';")
+    list_keys = cur2.fetchall()
     list_keys = [k[0] for k in list_keys]
     print(list_keys) 
 
@@ -276,8 +287,8 @@ def get_data(sd, categories):
     print("\nOG\n", categories)
 
     for sunday in sd:
-        cur.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
-        data = cur.fetchall()
+        cur2.execute(f"SELECT * FROM grocery_lists WHERE user_id={session["user_id"]} AND week_start='{sunday}';")
+        data = cur2.fetchall()
         if len(data) > 0:
             data = {list_keys[i]: data[0][i] for i in range(len(list_keys))}
             spent_data.append(float(data["spent"]))
@@ -288,8 +299,8 @@ def get_data(sd, categories):
             if spent_data[-1] > budget_data[-1]:
                 over_budget += spent_data[-1] - budget_data[-1]
 
-            cur.execute(f"SELECT * FROM grocery_items WHERE list_id={data["id"]} AND bought=true;")
-            items = cur.fetchall()
+            cur2.execute(f"SELECT * FROM grocery_items WHERE list_id={data["id"]} AND bought=true;")
+            items = cur2.fetchall()
             for i in items:
                 most_bought[i[2]] = most_bought.get(i[2], 0) + int(i[5])
                 category = categories.get(h.find_categories(i[3]), {"count": 0, "value": 0.0})
@@ -314,6 +325,8 @@ def get_data(sd, categories):
 
     print("\nYAY\n")
     print(categories)
+
+    conn2.close()
 
     for s in sd:
         print(s, end="   ")

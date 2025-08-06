@@ -24,7 +24,7 @@ Go to the History tab to see all your grocery lists from your past week. It give
 ## How It Was Made
 This web app was originally made by Thuc Chi Do ([thucchi-cs](https://github.com/thucchi-cs))
 
-This website was made with Python, JavaScript, HTML, and CSS. I used Flask to handle routing in this app. psycopg2 was used to connect to my online PostgreSQL on Neon. This website is also deployed on Render.
+This website was made with `Python`, `JavaScript`, `HTML`, and `CSS`. I used `Flask` to handle routing in this app. `psycopg2` was used to connect to my online `PostgreSQL` on `Neon`. This website is also deployed on `Render`.
 
 ### Made for Hack Club
 [![Athena Award Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Faward.athena.hackclub.com%2Fapi%2Fbadge)](https://award.athena.hackclub.com?utm_source=readme)
@@ -35,6 +35,3 @@ This website was made with Python, JavaScript, HTML, and CSS. I used Flask to ha
          style="width: 35%;">
   </a>
 </div>
-
-## Plan For Next Steps
-I am planning to add a section that gives you summaries of your past spending patterns using charts and graphs. These summaries would provide you insights on how much you averagely spend and what you are mostly spending on.
